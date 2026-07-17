@@ -12,7 +12,6 @@ Things you may want to cover:
 
 * Database creation
 ### USER 使用者
-
 | id | name | role |email | password | 
 | --- | --- | --- | --- | --- |
 | int | string | int | string | string 
