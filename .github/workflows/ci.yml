@@ -99,7 +99,6 @@ jobs:
 
   system-test:
     runs-on: ubuntu-latest
-
     services:
       postgresql:
         image: postgres:18
