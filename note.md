@@ -31,3 +31,7 @@
     bundle update           # 更新所有 gem
     bundle exec rails server  # 用 Bundler 管理的版本執行 rails 指令
     ```
+
+
+4. Windows macos 
+因為不想要帶兩台電腦，有時候會切換著使用，以macos為主的話，windows要另外裝一個linux環境>> wsl
