@@ -46,6 +46,11 @@ class UsersController < ApplicationController
 
   private
   def user_pramas
-    params.require(:user).permit(:name, :email, :role, :password)
+    params.require(:user).permit(:name, :email, :password)
   end
+
+  # 等登入機制做好後再補上
+  # def admin_user_pramas
+  #   params.require(:user).permit(:name, :email, :role)
+  # end
 end
