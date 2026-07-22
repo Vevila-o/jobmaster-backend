@@ -29,13 +29,17 @@
             <td> <%=user.name %> </td>
             <td> <%=user.email %> </td>
             <td> <%=user.role %> </td>
-            <td> <%= link_to "編輯", edit_user_path(user) %>  </td>
+            <td> 
+              <%= link_to "編輯", edit_user_path(user) %>  
+              <%= link_to "刪除", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'are you sure?'}%>
+            </td>
             <% end %>
           </tr>
         </tbody>
       </table>
       <br>
       <%= link_to "任務頁面", "/tasks" %>
+      <%= link_to "新增使用者", new_user_path(@user) %>
       
      
 </body>
