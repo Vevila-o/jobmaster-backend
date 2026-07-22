@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     @user = User.new(user_pramas)
 
     if @user.save
-      redirect_to user_path(@user), notice: "新的勇者加入！"
+      redirect_to users_path, notice: "新的勇者加入！"
     else
       render :new
     end
