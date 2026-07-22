@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      
+    </style>
+  </head>
+
+  <body>
+<h1>新增task</h1>
+
+<%= form_for(@task) do |f| %>
+  <%= f.label :title, "標題" %>
+  <%= f.text_field :title %> <br />
+
+  <%= f.label :content, "內容" %>
+  <%= f.text_field :content %> <br />
+
+
+  <%= f.submit %>
+<% end %>
+
+<br />
+<%= link_to '回tasks列表', tasks_path %>  </body>
+</html>
