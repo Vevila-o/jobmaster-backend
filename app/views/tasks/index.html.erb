@@ -9,6 +9,41 @@
 
   <body>
     <h1>tasks</h1>
+    
+    <%# flash notifactions  %>
+    <% flash.each do |type, msg| %>
+      <div class="flash flash-<%= type %>">
+        <%= msg%>
+      </div>
+    <% end %>
+    <br>
+
+
+    
+      <table>
+        <thead>
+          <tr>
+            <td> 任務名稱</td>
+            <td> 任務內容 </td>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% @tasks.each do |task| %>
+          
+          <tr>
+            <td> <%=task.title %> </td>
+            <td> <%=task.content %> </td>
+            <td>
+              <%= link_to "編輯", edit_task_path(task) %>
+              <%= link_to "刪除", task_path(task), data: { turbo_method: :delete, turbo_confirm: 'are you sure everthing done?'} %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br>
+
     <%= link_to "新增task", new_task_path %>
   </body>
 </html>

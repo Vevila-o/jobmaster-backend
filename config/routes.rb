@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root "tasks#index"
-  
+  # resources 是能一次把crud的功能一起叫，就不用另外寫get "item", "item#controller"
   resources :tasks
   resources :users
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
