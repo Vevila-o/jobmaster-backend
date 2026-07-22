@@ -23,6 +23,7 @@
       <table>
         <thead>
           <tr>
+            <td> 任務編號</td>
             <td> 任務名稱</td>
             <td> 任務內容 </td>
           </tr>
@@ -32,6 +33,7 @@
           <% @tasks.each do |task| %>
           
           <tr>
+            <td> <%=task.id%></td>
             <td> <%=task.title %> </td>
             <td> <%=task.content %> </td>
             <td>
@@ -45,5 +47,6 @@
       <br>
 
     <%= link_to "新增task", new_task_path %>
+    <%= link_to "所有使用者", "/users" %>
   </body>
 </html>

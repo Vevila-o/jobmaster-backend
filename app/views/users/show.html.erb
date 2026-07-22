@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My profile</title>
+</head>
+<body>
+  <h1>my profile</h1>
+  <%# flash notifactions  %>
+    <% flash.each do |type, msg| %>
+      <div class="flash flash-<%= type %>">
+        <%= msg%>
+      </div>
+    <% end %>
+
+  <table>
+        <thead>
+          <tr>
+            <td> 姓名</td>
+            <td> email </td>
+            <td> role </td>
+          </tr>
+        </thead>
+        <tbody>
+
+
+          <tr>
+            <td> <%=@user.name %> </td>
+            <td> <%=@user.email %> </td>
+            <td> <%=@user.role  %> </td>
+          </tr>
+          
+        </tbody>
+      </table>
+      <br>
+      <%= link_to "編輯", edit_user_path(@user) %>
+<br>
+
+
+  
+</body>
+</html>
