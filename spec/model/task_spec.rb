@@ -1,4 +1,4 @@
-# tasks CRUD 功能
+# tasks Unit Test
 
 require "rails_helper"
 
@@ -11,7 +11,6 @@ RSpec.describe Task do
     end
     it "標題沒輸入應為nil" do
       task = Task.new
-      expect(task.title).to be_nil
       expect(task.title).to be_nil
     end
     it "僅輸入內容" do
