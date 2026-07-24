@@ -1,3 +1,4 @@
 class User < ApplicationRecord
-  enum :role, { "一般使用者": 0, "管理者": 1 }
+  # 原本設定存入是int，pr建議修正後存入string
+  enum :role, { "normal": "normal", "adminstrator": "adminstrator" }
 end

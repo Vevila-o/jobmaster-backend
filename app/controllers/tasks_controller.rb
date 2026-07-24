@@ -1,4 +1,7 @@
 class TasksController < ApplicationController
+  # 指定使用的layout
+  layout "tasks"
+
   def index
     @tasks = Task.all
   end

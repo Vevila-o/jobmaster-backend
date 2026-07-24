@@ -1,22 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>new User</title>
-</head>
-<body>
-    <%= form_for(@user) do |f| %>
-    <%= f.label :name, "名字" %>
-    <%= f.text_field :name %> <br />
+<% content_for(:title) { "New users" } %>
 
-    <%= f.label :email, "信箱" %>
-    <%= f.text_field :email %> <br />
-
-    <%= f.label :password, "密碼" %>
-    <%= f.text_field :password %> <br />
-
-    <%= f.submit %>
-  <% end %>
-</body>
-</html>
+  <%=render "form", user:@user %>
+  <%= link_to '回users列表', users_path %> 
