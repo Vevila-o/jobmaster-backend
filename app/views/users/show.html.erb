@@ -1,0 +1,5 @@
+
+  <% content_for(:title) { "My profile" } %>
+  <%= render 'userlist' %>
+  <br>
+  <%= link_to "編輯", edit_user_path(@user) %>

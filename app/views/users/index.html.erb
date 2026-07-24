@@ -1,0 +1,22 @@
+
+
+  <% content_for(:title) { "All users" } %>
+
+      <table>
+        <thead>
+          <tr>
+            <td> id </td>
+            <td> 姓名 </td>
+            <td> email </td>
+            <td> role </td>
+          </tr>
+        </thead>
+
+        <tbody>  
+          <%= render partial: "user", collection: @users, locals: { actions: true } %>
+        </tbody>
+      </table>
+      <br>
+      
+      <%= link_to "任務頁面", "/tasks" %>
+      <%= link_to "新增使用者", new_user_path(@user) %>

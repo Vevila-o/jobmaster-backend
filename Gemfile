@@ -59,6 +59,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Ruby language server for IDE code intelligence [https://solargraph.org]
+  gem "solargraph", require: false
 end
 
 group :test do
@@ -66,3 +69,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "erb_lint", "~> 0.9.0"
