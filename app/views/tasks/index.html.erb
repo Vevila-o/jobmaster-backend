@@ -1,25 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      
-    </style>
-  </head>
-
-  <body>
-    <h1>tasks</h1>
-    
-    <%# flash notifactions  %>
-    <% flash.each do |type, msg| %>
-      <div class="flash flash-<%= type %>">
-        <%= msg%>
-      </div>
-    <% end %>
-    <br>
-
-
-    
+    <% content_for(:title) { "All tasks" } %>
       <table>
         <thead>
           <tr>
@@ -41,12 +20,10 @@
               <%= link_to "刪除", task_path(task), data: { turbo_method: :delete, turbo_confirm: 'are you sure everthing done?'} %>
             </td>
           </tr>
-          <% end %>
+          <% end %> 
         </tbody>
       </table>
       <br>
 
     <%= link_to "新增task", new_task_path %>
     <%= link_to "所有使用者", "/users" %>
-  </body>
-</html>

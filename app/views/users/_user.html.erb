@@ -1,0 +1,14 @@
+
+  <tr>
+    <td> <%= user.id %> </td>
+    <td> <%= user.name %> </td>
+    <td> <%= user.email %> </td>
+    <td> <%= user.role %> </td>
+    
+    <% if local_assigns[:actions] %>
+      <td>
+        <%= link_to "編輯", edit_user_path(user) %>
+        <%= link_to "刪除", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'are you sure?' } %>
+      </td>
+    <% end %>
+  </tr>

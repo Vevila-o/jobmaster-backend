@@ -72,3 +72,4 @@ group :test do
 end
 
 # respec-rails
+gem "erb_lint", "~> 0.9.0"

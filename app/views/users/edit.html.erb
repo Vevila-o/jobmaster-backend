@@ -1,23 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User edit</title>
-</head>
-<body>
-  <%= form_for(@user) do |f| %>
-    <%= f.label :name, "名字" %>
-    <%= f.text_field :name %> <br />
-
-    <%= f.label :email, "信箱" %>
-    <%= f.text_field :email %> <br />
-
-    <%= f.label :role, "權限"%>
-    <%= f.select :role, User.roles.keys %>
-
-
-    <%= f.submit %>
-  <% end %>
-</body>
-</html>
+<% content_for(:title) { "Edit users" } %>
+<%= render "form", user:@user %>
+<br>
+<%= link_to '回users列表', users_path %> 

@@ -1,46 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Users</title>
-</head>
-<body>
-  <h1>Users</h1>
-  <%# flash notifactions  %>
-    <% flash.each do |type, msg| %>
-      <div class="flash flash-<%= type %>">
-        <%= msg%>
-      </div>
-    <% end %>
 
-  <table>
+
+  <% content_for(:title) { "All users" } %>
+
+      <table>
         <thead>
           <tr>
-            <td> 姓名</td>
+            <td> id </td>
+            <td> 姓名 </td>
             <td> email </td>
             <td> role </td>
           </tr>
         </thead>
 
-        <% @users.each do |user| %>
         <tbody>  
-          <tr>
-            <td> <%=user.name %> </td>
-            <td> <%=user.email %> </td>
-            <td> <%=user.role %> </td>
-            <td> 
-              <%= link_to "編輯", edit_user_path(user) %>  
-              <%= link_to "刪除", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'are you sure?'}%>
-            </td>
-            <% end %>
-          </tr>
+          <%= render partial: "user", collection: @users, locals: { actions: true } %>
         </tbody>
       </table>
       <br>
+      
       <%= link_to "任務頁面", "/tasks" %>
       <%= link_to "新增使用者", new_user_path(@user) %>
-      
-     
-</body>
-</html>

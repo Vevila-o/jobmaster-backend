@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  # 使用者是0 管理者是1
-
   # 單一使用者
   def show
     @user = User.find_by(id: params[:id])
