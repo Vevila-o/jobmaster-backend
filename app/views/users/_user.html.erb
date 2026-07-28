@@ -4,7 +4,6 @@
     <td> <%= user.name %> </td>
     <td> <%= user.email %> </td>
     <td> <%= user.role %> </td>
-    
     <% if local_assigns[:actions] %>
       <td>
         <%= link_to "編輯", edit_user_path(user) %>
