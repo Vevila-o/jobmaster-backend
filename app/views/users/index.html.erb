@@ -1,14 +1,14 @@
 
 
-  <% content_for(:title) { "All users" } %>
+  <% content_for(:title) { t("user.index.title") } %>
 
       <table>
         <thead>
           <tr>
-            <td> id </td>
-            <td> 姓名 </td>
-            <td> email </td>
-            <td> role </td>
+            <td> <%=User.human_attribute_name(:id)%> </td>
+            <td> <%=User.human_attribute_name(:name)%> </td>
+            <td> <%=User.human_attribute_name(:email)%> </td>
+            <td> <%=User.human_attribute_name(:role)%> </td>
           </tr>
         </thead>
 
@@ -18,5 +18,5 @@
       </table>
       <br>
       
-      <%= link_to "任務頁面", "/tasks" %>
-      <%= link_to "新增使用者", new_user_path(@user) %>
+      <%= link_to t("path.tasks_path"), "/tasks" %>
+      <%= link_to t("path.new_user_path"), new_user_path(@user) %>

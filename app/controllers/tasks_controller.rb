@@ -15,7 +15,7 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
 
     if @task.save
-      redirect_to tasks_path, notice: "世界は残酷だ(succed)"
+      redirect_to tasks_path, notice: t("task.flash.new_succeed")
     else
       render :new
     end
@@ -31,7 +31,7 @@ class TasksController < ApplicationController
     @task = Task.find_by(id: params[:id])
 
     if @task.update(task_params)
-      redirect_to tasks_path, notice: "戦おう！(fix)"
+      redirect_to tasks_path, notice: t("task.flash.edit_succeed")
     else
       render :edit
     end
@@ -41,7 +41,7 @@ class TasksController < ApplicationController
   def destroy
     @task = Task.find_by(id: params[:id])
     @task.destroy if @task
-    redirect_to tasks_path, notice: "自由は海の向こうにある(delete)"
+    redirect_to tasks_path, notice: t("task.flash.delete_succeed")
   end
 
   # private 使用是只要在他之下都會變成private ruby 讀取是只要沒讀到private就會是public 因為要保護變數可是又要用到create

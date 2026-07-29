@@ -1,8 +1,8 @@
 
-    <% content_for(:title) { "Edit task " } %>
+    <% content_for(:title) { t("task.edit.title") } %>
 
       <%=render "form", task:@task %>
     
     <br />
-    <%= link_to '回tasks列表', tasks_path %> 
+    <%= link_to t("path.tasks_path"), tasks_path %> 
 

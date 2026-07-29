@@ -1,0 +1,24 @@
+"zh-TW":
+  activerecord:
+    attributes:
+      task:
+        id: 編號
+        title: 名稱
+        content: 內容
+      user:
+        id: 編號
+        name: 姓名
+        email: 信箱
+        password: 密碼
+        role: 權限
+
+  path:
+    new_task_path: 新增任務
+    tasks_path: 所有任務
+    users_path: 所有使用者
+    new_user_path: 新增使用者
+  action:
+    edit: 編輯
+    delete: 刪除
+    delete_confirm: 確定要刪除嗎？
+  

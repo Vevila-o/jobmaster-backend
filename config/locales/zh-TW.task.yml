@@ -1,0 +1,13 @@
+"zh-TW":
+  task:
+    index:
+      title: 所有任務
+    new:
+      title: 新增任務
+    edit:
+      title: 編輯任務
+    flash:
+      new_succeed: 新增任務成功
+      edit_succeed: 編輯任務成功
+      delete_succeed: 刪除任務成功
+
