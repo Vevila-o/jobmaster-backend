@@ -1,6 +1,14 @@
 class TasksController < ApplicationController
   def index
-    @tasks = Task.all
+    @tasks =
+      case params[:sort]
+      when "created_asc"
+        Task.order(created_at: :asc)
+      when "created_desc"
+        Task.order(created_at: :desc)
+      else
+        Task.order(created_at: :desc)
+      end
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面

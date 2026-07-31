@@ -6,37 +6,37 @@ RSpec.describe "User", type: :system, js: true do
   context "new" do
     before do
       visit users_path
-      click_link "新增使用者"
+      click_link I18n.t("path.new_user_path")
 
-      fill_in "名字", with: "路人1"
-      fill_in "信箱", with: "mob@test.com"
-      fill_in "密碼", with: "test"
-      click_button "Create User"
+      fill_in User.human_attribute_name(:name), with: "路人1"
+      fill_in User.human_attribute_name(:email), with: "mob@test.com"
+      fill_in User.human_attribute_name(:password), with: "test"
+      click_button I18n.t("helpers.submit.create", model: User.model_name.human)
     end
-    it { expect(page).to have_content("新的勇者加入！") }
+    it { expect(page).to have_content(I18n.t("user.flash.new_succeed")) }
     it { expect(page).to have_content("路人1") }
   end
   context "edit" do
     before do
       visit users_path
-      click_link "編輯"
+      click_link I18n.t("action.edit")
 
-      fill_in "名字", with: "路人1"
-      fill_in "信箱", with: "mob@test.com"
-      fill_in "密碼", with: "test"
-      click_button "Update User"
+      fill_in User.human_attribute_name(:name), with: "路人1"
+      fill_in User.human_attribute_name(:email), with: "mob@test.com"
+      fill_in User.human_attribute_name(:password), with: "test"
+      click_button I18n.t("helpers.submit.update", model: User.model_name.human)
     end
-    it { expect(page).to have_content("變身！") }
+    it { expect(page).to have_content(I18n.t("user.flash.edit_succeed")) }
     it { expect(page).to have_content("路人1") }
   end
   context "delete" do
     before do
       visit users_path
       accept_confirm do
-      click_link "刪除"
+        click_link I18n.t("action.delete")
       end
     end
-    it { expect(page).to have_content("再見了勇者") }
+    it { expect(page).to have_content(I18n.t("user.flash.delete_succeed")) }
     it { expect(page).not_to have_content("test") }
   end
 end

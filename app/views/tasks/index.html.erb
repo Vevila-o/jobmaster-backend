@@ -1,4 +1,7 @@
-    <% content_for(:title) { t("task.index.title") } %>
+    <% content_for(:title) { t("task.index.title") } %> 
+    <span> <%=t("action.created_at")%>：</span>
+    <%=link_to t("action.created_asc"), tasks_path(sort: "created_asc")%>
+    <%=link_to t("action.created_desc"), tasks_path(sort: "created_desc")%>
       <table>
         <thead>
           <tr>
