@@ -46,6 +46,7 @@ RSpec.describe "Task", type: :system, js: true do
       before do
         visit tasks_path
         click_link I18n.t("action.created_asc")
+        expect(page).to have_current_path(tasks_path(sort: "created_asc"))
       end
       it { expect(page.text.index("test0")).to be < page.text.index("test1") }
     end
@@ -54,6 +55,7 @@ RSpec.describe "Task", type: :system, js: true do
       before do
         visit tasks_path
         click_link I18n.t("action.created_desc")
+        expect(page).to have_current_path(tasks_path(sort: "created_desc"))
       end
       it { expect(page.text.index("test0")).to be > page.text.index("test1") }
     end
