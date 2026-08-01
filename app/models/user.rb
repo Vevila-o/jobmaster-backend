@@ -1,4 +1,7 @@
 class User < ApplicationRecord
-  # 原本設定存入是int，pr建議修正後存入string
   enum :role, { "normal": "normal", "adminstrator": "adminstrator" }
+  has_secure_password
+  validates :name, presence: true
+  validates :email, format: { with: /\A[^@]+@[^@]+\z/ }, uniqueness: true
+  attribute :role, :string, default: "normal"
 end

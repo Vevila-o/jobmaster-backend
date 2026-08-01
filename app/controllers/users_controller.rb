@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to users_path, notice: t("user.flash.new_succeed")
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
     if @user.update(user_pramas)
       redirect_to user_path(@user), notice: t("user.flash.edit_succeed")
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
   # 刪除
