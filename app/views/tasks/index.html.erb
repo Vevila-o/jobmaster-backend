@@ -1,4 +1,4 @@
-    <% content_for(:title) { t("task.index.title") } %> 
+    <% content_for(:title) { t(".title") } %> 
     <span> <%=t("action.created_at")%>：</span>
     <%=link_to t("action.created_asc"), tasks_path(sort: "created_asc")%>
     <%=link_to t("action.created_desc"), tasks_path(sort: "created_desc")%>
@@ -28,5 +28,5 @@
       </table>
       <br>
 
-    <%= link_to t("path.new_task_path"), new_task_path %>
-    <%= link_to t("path.users_path"), "/users" %>
+    <%= link_to t("navigation.new_task_path"), new_task_path %>
+    <%= link_to t("navigation.users_path"), "/users" %>

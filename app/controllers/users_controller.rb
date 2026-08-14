@@ -15,7 +15,7 @@ class UsersController < ApplicationController
     @user = User.new(user_pramas)
 
     if @user.save
-      redirect_to users_path, notice: t("user.flash.new_succeed")
+      redirect_to users_path, notice: t(".success")
     else
       render :new
     end
@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     @user = User.find_by(id: params[:id])
 
     if @user.update(user_pramas)
-      redirect_to user_path(@user), notice: t("user.flash.edit_succeed")
+      redirect_to user_path(@user), notice: t(".success")
     else
       render :edit
     end
@@ -39,7 +39,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find_by(id: params[:id])
     @user.destroy if @user
-    redirect_to users_path, notice: t("user.flash.delete_succeed")
+    redirect_to users_path, notice: t(".success")
   end
 
   private
