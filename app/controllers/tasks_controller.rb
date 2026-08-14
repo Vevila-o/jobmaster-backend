@@ -1,6 +1,7 @@
 class TasksController < ApplicationController
   def index
-    @tasks = Task.sorted_by(:created_at, :asc)
+    direction = params[:sort] == "created_desc" ? :desc : :asc
+    @tasks = Task.sorted_by(column: :created_at, direction: direction)
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面
@@ -40,7 +41,7 @@ class TasksController < ApplicationController
   # 刪除
   def destroy
     @task = Task.find_by(id: params[:id])
-    @task.destroy if @task
+    @task&.destroy
     redirect_to tasks_path, notice: t(".success")
   end
 

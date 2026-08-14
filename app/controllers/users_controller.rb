@@ -38,7 +38,7 @@ class UsersController < ApplicationController
   # 刪除
   def destroy
     @user = User.find_by(id: params[:id])
-    @user.destroy if @user
+    @user&.destroy
     redirect_to users_path, notice: t(".success")
   end
 

@@ -1,3 +1,3 @@
 class Task < ApplicationRecord
-  scope :sorted_by, ->(columne, direction) { order(columne => direction) }
+  scope :sorted_by, ->(column:, direction: :ASC) { order(column => direction) }
 end
