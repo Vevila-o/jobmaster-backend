@@ -1,4 +1,4 @@
-<% content_for(:title) { "Edit users" } %>
+<% content_for(:title) { t(".title") } %>
 <%= render "form", user:@user %>
 <br>
-<%= link_to '回users列表', users_path %> 
+<%= link_to t("navigation.users_path"), users_path %> 

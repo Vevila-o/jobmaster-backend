@@ -1,6 +1,10 @@
+
 class TasksController < ApplicationController
+  before_action :set_task, only: [ :edit, :update, :destroy ]
+
   def index
-    @tasks = Task.all
+    direction = params[:sort] == "created_desc" ? :desc : :asc
+    @tasks = Task.sorted_by(column: :created_at, direction: direction)
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面
@@ -15,7 +19,7 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
 
     if @task.save
-      redirect_to tasks_path, notice: "世界は残酷だ(succed)"
+      redirect_to tasks_path, notice: t(".success")
     else
       render :new
     end
@@ -23,15 +27,12 @@ class TasksController < ApplicationController
 
   # 編輯page 跟new一樣不是真的edit
   def edit
-    @task = Task.find_by(id: params[:id])
   end
 
   # 編輯
   def update
-    @task = Task.find_by(id: params[:id])
-
     if @task.update(task_params)
-      redirect_to tasks_path, notice: "戦おう！(fix)"
+      redirect_to tasks_path, notice: t(".success")
     else
       render :edit
     end
@@ -39,13 +40,16 @@ class TasksController < ApplicationController
 
   # 刪除
   def destroy
-    @task = Task.find_by(id: params[:id])
-    @task.destroy if @task
-    redirect_to tasks_path, notice: "自由は海の向こうにある(delete)"
+    @task&.destroy
+    redirect_to tasks_path, notice: t(".success")
   end
 
   # private 使用是只要在他之下都會變成private ruby 讀取是只要沒讀到private就會是public 因為要保護變數可是又要用到create
   private
+    def set_task
+      @task = Task.find_by(id: params[:id])
+    end
+
     def task_params
       params.require(:task).permit(:title, :content)
     end

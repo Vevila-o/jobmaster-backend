@@ -1,0 +1,8 @@
+"zh-TW":
+  activerecord:
+    attributes:
+      task:
+        id: 編號
+        title: 標題
+        content: 內容
+  

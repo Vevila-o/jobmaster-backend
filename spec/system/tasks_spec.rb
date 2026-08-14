@@ -1,43 +1,70 @@
-# user e2e Test
+# task e2e Test
 
 require "rails_helper"
 RSpec.describe "Task", type: :system, js: true do
-  let!(:task) { Task.create!(title: "test1", content: "test") }
+  subject { page }
+  let!(:task) { Task.create!(title: "test1", content: "test", created_at: Time.zone.now) }
+
   context "new" do
     before do
       visit tasks_path
-      click_link "新增task"
+      click_link I18n.t("navigation.new_task_path")
 
-      fill_in "標題", with: "task1"
-      fill_in "內容", with: "test"
-      click_button "Create Task"
+      fill_in Task.human_attribute_name(:title), with: "task1"
+      fill_in Task.human_attribute_name(:content), with: "test"
+      click_button I18n.t("helpers.submit.create", model: Task.model_name.human)
     end
 
-    it { expect(page).to have_content("世界は残酷だ(succed)") }
-    it { expect(page).to have_content("task1") }
+    it { is_expected.to have_content(I18n.t("tasks.create.success")) }
+    it { is_expected.to have_content("task1") }
   end
+
   context "edit" do
     before do
       visit tasks_path
-      click_link "編輯"
+      click_link I18n.t("action.edit")
 
-      fill_in "標題", with: "task1"
-      fill_in "內容", with: "test"
-      click_button "Update Task"
+      fill_in Task.human_attribute_name(:title), with: "task1"
+      fill_in Task.human_attribute_name(:content), with: "test"
+      click_button I18n.t("helpers.submit.update", model: Task.model_name.human)
     end
 
-    it { expect(page).to have_content("戦おう！(fix)") }
-    it { expect(page).to have_content("task1") }
+    it { is_expected.to have_content(I18n.t("tasks.update.success")) }
+    it { is_expected.to have_content("task1") }
   end
+
   context "delete" do
     before do
       visit tasks_path
       accept_confirm do
-      click_link "刪除"
+        click_link I18n.t("action.delete")
       end
     end
 
-    it { expect(page).to have_content("自由は海の向こうにある(delete)") }
-    it { expect(page).not_to have_content("task1") }
+    it { is_expected.to have_content(I18n.t("tasks.destroy.success")) }
+    it { is_expected.not_to have_content("task1") }
+  end
+
+  describe "sort" do
+    subject { page.text.index("test0") }
+    let!(:older_task) { Task.create!(title: "test0", content: "test0", created_at: 1.day.ago) }
+
+    context "created_asc" do
+      before do
+        visit tasks_path
+        click_link I18n.t("action.created_asc")
+        expect(page).to have_current_path(tasks_path(sort: "created_asc"))
+      end
+      it { is_expected.to be < page.text.index("test1") }
+    end
+
+    context "created_desc" do
+      before do
+        visit tasks_path
+        click_link I18n.t("action.created_desc")
+        expect(page).to have_current_path(tasks_path(sort: "created_desc"))
+      end
+      it { is_expected.to be > page.text.index("test1") }
+    end
   end
 end

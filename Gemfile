@@ -72,5 +72,8 @@ group :test do
   gem "database_cleaner-active_record"
 end
 
-# respec-rails
+# erb_lint
 gem "erb_lint", "~> 0.9.0"
+
+# i18n
+gem "rails-i18n"

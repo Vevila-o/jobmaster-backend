@@ -1,0 +1,9 @@
+"zh-TW":
+  action:
+    edit: 編輯
+    delete: 刪除
+    delete_confirm: 確定要刪除嗎？
+    created_asc: 升冪
+    created_desc: 降冪
+    created_at: 建立時間
+  

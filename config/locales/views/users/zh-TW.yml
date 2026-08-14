@@ -1,0 +1,17 @@
+"zh-TW":
+  users:
+    index:
+      title: 所有使用者
+    show:
+      title: 個人資訊
+    new:
+      title: 新增使用者
+    create:
+      success: 新增使用者成功
+    edit:
+      title: 編輯使用者
+    update:
+      success: 編輯使用者成功
+    destroy:
+      success: 刪除使用者成功
+      

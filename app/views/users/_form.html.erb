@@ -1,11 +1,11 @@
 <%= form_for(@user) do |f| %>
-    <%= f.label :name, "名字" %>
+    <%= f.label :name, User.human_attribute_name(:name) %>
     <%= f.text_field :name %> <br />
 
-    <%= f.label :email, "信箱" %>
+    <%= f.label :email, User.human_attribute_name(:email) %>
     <%= f.text_field :email %> <br />
 
-    <%= f.label :password, "密碼" %>
+    <%= f.label :password, User.human_attribute_name(:password) %>
     <%= f.text_field :password %> <br />
 
     <%= f.submit %>

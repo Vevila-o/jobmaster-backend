@@ -1,10 +1,13 @@
-    <% content_for(:title) { "All tasks" } %>
+    <% content_for(:title) { t(".title") } %> 
+    <span> <%=t("action.created_at")%>：</span>
+    <%=link_to t("action.created_asc"), tasks_path(sort: "created_asc")%>
+    <%=link_to t("action.created_desc"), tasks_path(sort: "created_desc")%>
       <table>
         <thead>
           <tr>
-            <td> 任務編號</td>
-            <td> 任務名稱</td>
-            <td> 任務內容 </td>
+            <td><%=Task.human_attribute_name(:id) %></td>
+            <td><%=Task.human_attribute_name(:title) %></td>
+            <td><%=Task.human_attribute_name(:content)%> </td>
           </tr>
         </thead>
         <tbody>
@@ -16,8 +19,8 @@
             <td> <%=task.title %> </td>
             <td> <%=task.content %> </td>
             <td>
-              <%= link_to "編輯", edit_task_path(task) %>
-              <%= link_to "刪除", task_path(task), data: { turbo_method: :delete, turbo_confirm: 'are you sure everthing done?'} %>
+              <%= link_to t("action.edit"), edit_task_path(task) %>
+              <%= link_to t("action.delete"), task_path(task), data: { turbo_method: :delete, turbo_confirm: t("action.delete_confirm")} %>
             </td>
           </tr>
           <% end %> 
@@ -25,5 +28,5 @@
       </table>
       <br>
 
-    <%= link_to "新增task", new_task_path %>
-    <%= link_to "所有使用者", "/users" %>
+    <%= link_to t("navigation.new_task_path"), new_task_path %>
+    <%= link_to t("navigation.users_path"), "/users" %>
