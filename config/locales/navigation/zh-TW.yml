@@ -1,0 +1,7 @@
+"zh-TW":
+  navigation:
+    new_task_path: 新增任務
+    tasks_path: 所有任務
+    users_path: 所有使用者
+    new_user_path: 新增使用者
+  

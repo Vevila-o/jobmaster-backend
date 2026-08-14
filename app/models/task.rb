@@ -1,4 +1,3 @@
 class Task < ApplicationRecord
-  # 需填入標題
-  validates_presence_of :title
+  scope :sorted_by, ->(column:, direction: :ASC) { order(column => direction) }
 end
