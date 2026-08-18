@@ -6,7 +6,7 @@ RSpec.describe User, type: :request do
   let!(:user) { User.create!(name: "test1", email: "test@t.t", password: "test", role: "normal") }
 
   describe "POST /users" do
-    let(:user_params) { { user: { name: "test1", email: "test@t.t", password: "test", role: "normal" } } }
+    let(:user_params) { { user: { name: "test", email: "test@test.t", password: "test", role: "normal" } } }
     it "increases User" do
       expect {
         post users_path, params: user_params
