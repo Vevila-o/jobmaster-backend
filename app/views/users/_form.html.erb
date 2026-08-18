@@ -1,4 +1,13 @@
+
 <%= form_for(@user) do |f| %>
+<% if @user.errors.any? %>
+    <div class="error-msg">
+      <% @user.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+  <br>
     <%= f.label :name, User.human_attribute_name(:name) %>
     <%= f.text_field :name %> <br />
 
@@ -6,7 +15,7 @@
     <%= f.text_field :email %> <br />
 
     <%= f.label :password, User.human_attribute_name(:password) %>
-    <%= f.text_field :password %> <br />
+    <%= f.password_field :password %> <br />
 
     <%= f.submit %>
   <% end %>

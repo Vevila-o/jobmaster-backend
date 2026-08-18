@@ -1,0 +1,7 @@
+"zh-TW":
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: 不能為空白
+      invalid: 是無效的
+      taken: 已經被使用

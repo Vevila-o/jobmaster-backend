@@ -37,3 +37,8 @@
 note.md
 commands.md
 pr_template.md
+ai-guide.md
+
+# Agent config (local only, not shared via version control)
+/AGENTS.md
+/CLAUDE.md

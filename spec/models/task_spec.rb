@@ -7,20 +7,31 @@ RSpec.describe Task do
     subject { Task.new(title: title, content: content) }
         let(:title) { "test1" }
         let(:content) { "test" }
+
     context "input title, content" do
       it { is_expected.to have_attributes(title: "test1", content: "test") }
-    end
-    context "no input title" do
-      let(:title) { nil }
-      let(:content) { nil }
-      it { is_expected.to have_attributes(title: nil) }
     end
 
     context "only content" do
       let(:title) { nil }
       it { is_expected.to have_attributes(content: "test") }
     end
+
+    context "title has value" do
+      let(:title) { "test" }
+      it { is_expected.to be_valid }
+    end
+
+    context "title is empty" do
+      let(:title) { nil }
+      it { is_expected.to be_invalid }
+      it "shows title empty error msg" do
+        subject.valid?
+        expect(subject.errors[:title]).to be_present
+      end
+    end
   end
+
   describe ".create" do
     it "creates independent records with different titles" do
       task1 = Task.create(title: "taskA")
