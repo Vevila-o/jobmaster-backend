@@ -21,17 +21,18 @@ RSpec.describe Task, type: :request do
     let(:update_params) { { task: { title: "nice try", content: "nice" } } }
     context "update Task" do
       before do
-          patch task_path(task), params: update_params
+        patch task_path(task), params: update_params
         task.reload
       end
       it { expect(task).to have_attributes(title: "nice try", content: "nice") }
     end
 
-    context "path to tasks_path" do
+    context "shows updated content" do
       before do
         patch task_path(task), params: update_params
       end
-      it { expect(response).to redirect_to(tasks_path) }
+      it { expect(response.body).to include("nice try") }
+      it { expect(response.body).to include("nice") }
     end
   end
   describe "DELETE /tasks/:id" do

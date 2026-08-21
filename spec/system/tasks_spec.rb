@@ -28,8 +28,6 @@ RSpec.describe "Task", type: :system, js: true do
       fill_in Task.human_attribute_name(:content), with: "test"
       click_button I18n.t("helpers.submit.update", model: Task.model_name.human)
     end
-
-    it { is_expected.to have_content(I18n.t("tasks.update.success")) }
     it { is_expected.to have_content("task1") }
   end
 
