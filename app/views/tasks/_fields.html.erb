@@ -1,0 +1,11 @@
+<% if flash[:notice] %>
+  <p class="success-msg"><%= flash[:notice] %></p>
+<% end %>
+
+    <br>
+    <%= f.label :title, Task.human_attribute_name(:title) %>
+    <%= f.text_field :title %> <br />
+
+    <%= f.label :content, Task.human_attribute_name(:content) %>
+    <%= f.text_field :content %> <br />
+    <%= f.submit %>

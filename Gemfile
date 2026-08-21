@@ -77,3 +77,5 @@ gem "erb_lint", "~> 0.9.0"
 
 # i18n
 gem "rails-i18n"
+
+gem "tailwindcss-rails", "~> 4.6"

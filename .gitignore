@@ -42,3 +42,6 @@ ai-guide.md
 # Agent config (local only, not shared via version control)
 /AGENTS.md
 /CLAUDE.md
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

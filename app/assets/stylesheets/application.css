@@ -8,3 +8,20 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+.flex {
+  display: flex;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+a {
+  color: #0f5e59;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #0f5e59;
+}
