@@ -2,30 +2,23 @@
     <span> <%=t("action.created_at")%>：</span>
     <%=link_to t("action.created_asc"), tasks_path(sort: "created_asc")%>
     <%=link_to t("action.created_desc"), tasks_path(sort: "created_desc")%>
-      <table>
-        <thead>
-          <tr>
-            <td><%=Task.human_attribute_name(:id) %></td>
-            <td><%=Task.human_attribute_name(:title) %></td>
-            <td><%=Task.human_attribute_name(:content)%> </td>
-          </tr>
-        </thead>
-        <tbody>
+      <div>
+        <div>
+          <div class= "flex">
+            <div><%=Task.human_attribute_name(:id) %></div>
+            <div><%=Task.human_attribute_name(:title) %></div>
+            <div><%=Task.human_attribute_name(:content)%> </div>
+          </div>
+        </div>
+        <div>
 
           <% @tasks.each do |task| %>
           
-          <tr>
-            <td> <%=task.id%></td>
-            <td> <%=task.title %> </td>
-            <td> <%=task.content %> </td>
-            <td>
-              <%= link_to t("action.edit"), edit_task_path(task) %>
-              <%= link_to t("action.delete"), task_path(task), data: { turbo_method: :delete, turbo_confirm: t("action.delete_confirm")} %>
-            </td>
-          </tr>
+          <%=render "task", task: task %>
+         
           <% end %> 
-        </tbody>
-      </table>
+        </div>
+      </div>
       <br>
 
     <%= link_to t("navigation.new_task_path"), new_task_path %>

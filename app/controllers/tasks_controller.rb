@@ -32,7 +32,8 @@ class TasksController < ApplicationController
   # 編輯
   def update
     if @task.update(task_params)
-      redirect_to tasks_path, notice: t(".success")
+      flash.now[:notice] = t(".success")
+      render partial: "task", locals: { task: @task }
     else
       render :edit, status: :unprocessable_entity
     end
