@@ -111,7 +111,7 @@ bundle exec puma -t 5:5 -p ${PORT:-3000} -e production
 
 ### Live URL
  
-[jobmaster-backend](https://jobmaster-backend.onrender.com)
+[jobmaster-backend](https://jobmaster-backend-try.onrender.com/)
 
 *免費方案 15 分鐘無流量會休眠，首次訪問需等待冷啟動*
 
