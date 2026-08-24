@@ -1,11 +1,12 @@
 # task e2e Test
 
 require "rails_helper"
-RSpec.describe "Task", type: :system, js: true do
+RSpec.describe "Task", :js, type: :system do
   subject { page }
-  let!(:task) { Task.create!(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now) }
 
-  context "new" do
+  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now) }
+
+  context "when new" do
     before do
       visit tasks_path
       click_link I18n.t("navigation.new_task_path")
@@ -21,12 +22,13 @@ RSpec.describe "Task", type: :system, js: true do
     it { is_expected.to have_content("task1") }
   end
 
-  context "new without end_time" do
+  context "when new_task without end_time" do
     let(:blank_error) { I18n.t(
       "errors.format",
       attribute: Task.human_attribute_name(:end_time),
       message: I18n.t("errors.messages.blank"))}
-     before do
+
+    before do
       visit tasks_path
       click_link I18n.t("navigation.new_task_path")
 
@@ -34,11 +36,13 @@ RSpec.describe "Task", type: :system, js: true do
       fill_in Task.human_attribute_name(:content), with: "test"
       click_button I18n.t("helpers.submit.create", model: Task.model_name.human)
     end
+
     it { is_expected.to have_content(blank_error) }
   end
 
-  context "edit" do
+  context "when edit task" do
     before do
+      task
       visit tasks_path
       click_link I18n.t("action.edit")
 
@@ -46,11 +50,13 @@ RSpec.describe "Task", type: :system, js: true do
       fill_in Task.human_attribute_name(:content), with: "test"
       click_button I18n.t("helpers.submit.update", model: Task.model_name.human)
     end
+
     it { is_expected.to have_content("task1") }
   end
 
-  context "delete" do
+  context "when delete task" do
     before do
+      task
       visit tasks_path
       accept_confirm do
         click_link I18n.t("action.delete")
@@ -62,42 +68,49 @@ RSpec.describe "Task", type: :system, js: true do
   end
 
   describe "sort" do
-    subject { page.text.index("test0") }
-    let!(:older_task) { Task.create!(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.day.from_now) }
+    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.day.from_now) }
 
-    context "created_asc" do
-      before do
-        visit tasks_path
-        click_link I18n.t("action.created_asc")
-        expect(page).to have_current_path(tasks_path(sort: "created_asc"))
-      end
-      it { is_expected.to be < page.text.index("test1") }
+    before do
+      task
+      older_task
+      visit tasks_path
     end
 
-    context "created_desc" do
+    context "when sorted by created_asc" do
       before do
-        visit tasks_path
+        click_link I18n.t("action.created_asc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(sort: "created_asc")) }
+      it { expect(page).to have_css("div:first-of-type", text: "test0") }
+    end
+
+    context "when sorted by created_desc" do
+      before do
         click_link I18n.t("action.created_desc")
       end
+
       it { expect(page).to have_current_path(tasks_path(sort: "created_desc")) }
-      it { is_expected.to be > page.text.index("test1") }
-    end
-    context "end_time_asc" do
-      before do
-        visit tasks_path
-        click_link I18n.t("action.end_asc")
-      end
-      it { expect(page).to have_current_path(tasks_path(sort: "end_time_asc")) }
-      it { is_expected.to be > page.text.index("test1") }
+      it { expect(page).to have_css("div:first-of-type", text: "test1") }
     end
 
-    context "end_time_desc" do
+    context "when sorted by end_time_asc" do
       before do
-        visit tasks_path
-        click_link I18n.t("action.end_desc")
-        expect(page).to have_current_path(tasks_path(sort: "end_time_desc"))
+        click_link I18n.t("action.end_asc")
       end
-      it { is_expected.to be < page.text.index("test1") }
+
+      it { expect(page).to have_current_path(tasks_path(sort: "end_time_asc")) }
+      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+    end
+
+    context "when sorted by end_time_desc" do
+      before do
+        click_link I18n.t("action.end_desc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(sort: "end_time_desc")) }
+
+      it { expect(page).to have_css("div:first-of-type", text: "test0") }
     end
   end
 end

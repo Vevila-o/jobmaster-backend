@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to users_path, notice: t(".success")
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     if @user.update(user_pramas)
       redirect_to user_path(@user), notice: t(".success")
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
   # 刪除
