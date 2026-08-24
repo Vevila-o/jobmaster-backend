@@ -1,12 +1,22 @@
     <% content_for(:title) { t(".title") } %> 
+
+  <div style="margin: 15px 0px">
     <span> <%=t("action.created_at")%>：</span>
     <%=link_to t("action.created_asc"), tasks_path(sort: "created_asc")%>
     <%=link_to t("action.created_desc"), tasks_path(sort: "created_desc")%>
+
+    <span><%=t("action.end_time")%>：</span>
+    <%=link_to t("action.end_asc"), tasks_path(sort: "end_time_asc")%>
+    <%=link_to t("action.end_desc"), tasks_path(sort: "end_time_desc")%>
+  </div>
+
+
       <div>
         <div class= "flex gap-4">
           <div><%=Task.human_attribute_name(:id) %></div>
           <div><%=Task.human_attribute_name(:title) %></div>
           <div><%=Task.human_attribute_name(:content)%> </div>
+          <div><%=Task.human_attribute_name(:end_time)%></div>
         </div>
         <div>
 

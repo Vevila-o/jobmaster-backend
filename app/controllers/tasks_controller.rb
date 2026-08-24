@@ -3,8 +3,15 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :edit, :update, :destroy ]
 
   def index
-    direction = params[:sort] == "created_desc" ? :desc : :asc
-    @tasks = Task.sorted_by(column: :created_at, direction: direction)
+    column, direction =
+      case params[:sort]
+      when "created_desc" then [ :created_at, :desc ]
+      when "created_asc" then [ :created_at, :asc ]
+      when "end_time_desc" then [ :end_time, :desc ]
+      when "end_time_asc" then [ :end_time, :asc ]
+      else [ :created_at, :desc ]
+      end
+    @tasks = Task.sorted_by(column: column, direction: direction)
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面
@@ -21,7 +28,7 @@ class TasksController < ApplicationController
     if @task.save
       redirect_to tasks_path, notice: t(".success")
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -35,7 +42,7 @@ class TasksController < ApplicationController
       flash.now[:notice] = t(".success")
       render partial: "task", locals: { task: @task }
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -52,7 +59,7 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:title, :content)
+      params.require(:task).permit(:title, :content, :end_time)
     end
 
   # 修改

@@ -2,22 +2,32 @@
   require "rails_helper"
 
 RSpec.describe Task, type: :request do
-  # 預設task
-  let!(:task) { Task.create!(title: "test1", content: "test") }
-  let(:task_params) { { task: { title: "test1", content: "test" } } }
+  subject(:create_task) { post tasks_path, params: params }
     describe "POST /tasks" do
-      it "increases Task" do
-        expect {
-          post tasks_path, params: task_params
-        }.to change(Task, :count).by(1)
+      context "valid parameter" do
+        let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } }  }
+          it { expect { create_task }.to change(Task, :count).by(1) }
+          it "redirects to tasks_path" do
+            create_task
+            expect(response).to redirect_to(tasks_path)
+          end
       end
 
-      it "redirects to tasks_path" do
-        post tasks_path, params: task_params
-        expect(response).to redirect_to(tasks_path)
+      context "when end_time is blank" do
+        let(:params) { { task: { title: "test2", content: "nice" } } }
+
+        it "is 422" do
+          create_task
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+        it "does not create a task" do
+          expect { create_task }.not_to change(Task, :count)
+        end
       end
     end
+
   describe "PATCH /task/:id" do
+    let!(:task) { Task.create!(title: "test1", content: "test", end_time: 1.day.from_now) }
     let(:update_params) { { task: { title: "nice try", content: "nice" } } }
     context "update Task" do
       before do
@@ -36,6 +46,7 @@ RSpec.describe Task, type: :request do
     end
   end
   describe "DELETE /tasks/:id" do
+    let!(:task) { Task.create!(title: "test1", content: "test", end_time: 1.day.from_now) }
     it "delete task from db" do
       expect {
         delete task_path(task)
