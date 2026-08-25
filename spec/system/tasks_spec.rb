@@ -115,4 +115,58 @@ RSpec.describe "Task", :js, type: :system do
       it { expect(page).to have_css("div:first-of-type", text: "test0") }
     end
   end
+
+  # requests test
+  describe Task, "POST /tasks", type: :request do
+    subject(:create_task) { post tasks_path, params: params }
+
+    context "with valid parameters" do
+      let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
+
+      it { expect { create_task }.to change(described_class, :count).by(1) }
+
+      it "redirects to tasks_path" do
+        create_task
+        expect(response).to redirect_to(tasks_path)
+      end
+    end
+
+    context "when end_time is blank" do
+      let(:params) { { task: { title: "test2", content: "nice" } } }
+
+      it "is 422" do
+        create_task
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "does not create a task" do
+        expect { create_task }.not_to change(described_class, :count)
+      end
+    end
+  end
+
+  describe Task, "PATCH /task/:id", type: :request do
+    let(:update_params) { { task: { title: "nice try", content: "nice" } } }
+
+    context "when task is updated" do
+      before do
+        patch task_path(task), params: update_params
+        task.reload
+      end
+
+      it { expect(task).to have_attributes(title: "nice try", content: "nice") }
+    end
+  end
+
+  describe Task, "DELETE /tasks/:id", type: :request do
+    before do
+      task
+    end
+
+    it "delete task from db" do
+      expect {
+        delete task_path(task)
+      }.to change(described_class, :count).by(-1)
+    end
+  end
 end

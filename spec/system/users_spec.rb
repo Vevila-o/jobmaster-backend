@@ -58,4 +58,65 @@ RSpec.describe "User", :js, type: :system do
     it { is_expected.to have_content(I18n.t("users.destroy.success")) }
     it { is_expected.not_to have_content("test") }
   end
+
+  # requests test
+  describe User, "POST /users", type: :request do
+    let(:user_params) { { user: { name: "test", email: "test@test.t", password: "test", role: "normal" } } }
+
+    it "increases User" do
+      expect {
+        post users_path, params: user_params
+      }.to change(described_class, :count).by(1)
+    end
+
+    it "redirects to users_path" do
+      post users_path, params: user_params
+      expect(response).to redirect_to(users_path)
+    end
+  end
+
+  describe User, "PATCH /users/:id", type: :request do
+    let(:new_params) { { user: { name: "勇者一" } } }
+
+    context "when updating user" do
+      before do
+        user
+        patch user_path(user), params: new_params
+        user.reload
+      end
+
+      it { expect(user).to have_attributes(name: "勇者一") }
+    end
+
+    context "when redirecting to user_path" do
+      before { patch user_path(user), params: new_params }
+
+      it { expect(response).to redirect_to(user_path(user)) }
+    end
+  end
+
+  describe User, "DELETE /users/:id", type: :request do
+    before { user }
+
+    it "deletes user from db" do
+      expect {
+        delete user_path(user)
+      }.to change(described_class, :count).by(-1)
+    end
+  end
+
+  describe User, "#role", type: :request do
+    # 目前還沒有登入控制，假定現在都是一般使用者
+    let(:role_params) { { user: { role: "adminstrator" } } }
+
+    before do
+      user
+      patch user_path(user), params: role_params
+      user.reload
+    end
+
+    it "can't be updated to adminstrator" do
+      expect(user.role).to eq("normal")
+    end
+  end
 end
