@@ -4,11 +4,11 @@ require "rails_helper"
 
 RSpec.describe Task do
   describe ".new" do
-    subject(:task) { described_class.new(title: title, content: content, end_time: end_time) }
+    subject (:task) { FactoryBot.build(:task, title: title, content: content, end_time: end_time) }
 
-        let(:title) { "test1" }
-        let(:content) { "test" }
-        let(:end_time) { "2026-8-21 08:00" }
+      let(:title) { "test1" }
+      let(:content) { "test" }
+      let(:end_time) { "2026-8-21 08:00" }
 
     context "when title and content are given" do
       it { is_expected.to have_attributes(title: "test1", content: "test") }
@@ -33,7 +33,7 @@ RSpec.describe Task do
 
       it "shows title empty error msg" do
         task.valid?
-        expect(task.errors[:title]).to be_present
+          expect(task.errors.of_kind?(:title, :blank)).to be true
       end
     end
   end

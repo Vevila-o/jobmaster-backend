@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe User do
   describe ".new" do
-    subject (:user) { described_class.new(name: user_name, email: email, password: password, role: role) }
+    subject (:user) { FactoryBot.build(:user, name: user_name, email: email, password: password, role: role) }
 
       let(:user_name) { "test" }
       let(:email) { "t@t.t" }
@@ -22,7 +22,8 @@ RSpec.describe User do
 
         it "shows name empty error msg" do
           user.valid?
-          expect(user.errors[:name]).to be_present
+          # 精準驗證「是不是 blank 錯誤」
+          expect(user.errors.of_kind?(:name, :blank)).to be true
         end
       end
 
@@ -33,13 +34,13 @@ RSpec.describe User do
 
         it "shows password empty error msg" do
           user.valid?
-          expect(user.errors[:password]).to be_present
+          expect(user.errors.of_kind?(:password, :blank)).to be true
         end
       end
   end
 
   describe "#email" do
-    subject(:test_user) { described_class.new(name: "test", email: email, password: "test", role: "normal") }
+  subject (:user) { FactoryBot.build(:user, email: email,) }
 
     context "when email is blank" do
       let(:email) { nil }
@@ -47,8 +48,8 @@ RSpec.describe User do
       it { is_expected.to be_invalid }
 
       it "shows email empty error msg" do
-        test_user.valid?
-        expect(test_user.errors[:email]).to be_present
+        user.valid?
+        expect(user.errors.of_kind?(:email, :blank)).to be true
       end
     end
 
@@ -58,31 +59,31 @@ RSpec.describe User do
       it { is_expected.to be_invalid }
 
       it "shows email empty error msg" do
-        test_user.valid?
-        expect(test_user.errors[:email]).to be_present
+        user.valid?
+        expect(user.errors.of_kind?(:email, :invalid)).to be true
       end
     end
 
     context "when email is already taken" do
       let(:email) { "t@t.t" }
-      let(:second) { described_class.create(name: "test2", email: "t@t.t", password: "test") }
+      let(:second) { FactoryBot.create(:user, name: "test2", email: "t@t.t", password: "test") }
 
       before do
-        test_user
+        user
         second
       end
 
       it { is_expected.to be_invalid }
 
       it "shows email taken error msg" do
-        test_user.valid?
-        expect(test_user.errors[:email]).to be_present
+        user.valid?
+        expect(user.errors.of_kind?(:email, :taken)).to be true
       end
     end
   end
 
   describe "#role" do
-    subject { described_class.new(role: role) }
+    subject { FactoryBot.build(:user, role: role) }
 
       context "when role is administrator" do
         let(:role) { "adminstrator" }

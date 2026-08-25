@@ -73,6 +73,12 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "database_cleaner-active_record"
+
+  # Fixtures replacement with a straightforward definition syntax [https://github.com/thoughtbot/factory_bot]
+  gem "factory_bot_rails"
+
+  # Generate fake test data [https://github.com/faker-ruby/faker]
+  gem "faker"
 end
 
 # erb_lint
