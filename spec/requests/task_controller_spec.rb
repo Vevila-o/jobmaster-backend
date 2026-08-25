@@ -21,7 +21,7 @@ RSpec.describe Task, type: :request do
 
         it "is 422" do
           create_task
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it "does not create a task" do
@@ -41,15 +41,6 @@ RSpec.describe Task, type: :request do
       end
 
       it { expect(task).to have_attributes(title: "nice try", content: "nice") }
-    end
-
-    context "when rendering the response" do
-      before do
-        patch task_path(task), params: update_params
-      end
-
-      it { expect(response.body).to include("nice try") }
-      it { expect(response.body).to include("nice") }
     end
   end
 

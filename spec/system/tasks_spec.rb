@@ -51,8 +51,10 @@ RSpec.describe "Task", :js, type: :system do
       click_button I18n.t("helpers.submit.update", model: Task.model_name.human)
     end
 
-    it { is_expected.to have_content("task1") }
+    it { is_expected.to have_text("task1") }
+    it { is_expected.to have_text("test") }
   end
+
 
   context "when delete task" do
     before do
@@ -81,7 +83,7 @@ RSpec.describe "Task", :js, type: :system do
         click_link I18n.t("action.created_asc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(sort: "created_asc")) }
+      it { expect(page).to have_current_path(tasks_path(column: "created_at", direction: "asc")) }
       it { expect(page).to have_css("div:first-of-type", text: "test0") }
     end
 
@@ -90,7 +92,7 @@ RSpec.describe "Task", :js, type: :system do
         click_link I18n.t("action.created_desc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(sort: "created_desc")) }
+      it { expect(page).to have_current_path(tasks_path(column: "created_at", direction: "desc")) }
       it { expect(page).to have_css("div:first-of-type", text: "test1") }
     end
 
@@ -99,7 +101,7 @@ RSpec.describe "Task", :js, type: :system do
         click_link I18n.t("action.end_asc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(sort: "end_time_asc")) }
+      it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "asc")) }
       it { expect(page).to have_css("div:first-of-type", text: "test1") }
     end
 
@@ -108,7 +110,7 @@ RSpec.describe "Task", :js, type: :system do
         click_link I18n.t("action.end_desc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(sort: "end_time_desc")) }
+      it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "desc")) }
 
       it { expect(page).to have_css("div:first-of-type", text: "test0") }
     end

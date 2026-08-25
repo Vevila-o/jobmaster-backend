@@ -2,12 +2,12 @@
 
   <div style="margin: 15px 0px">
     <span> <%=t("action.created_at")%>：</span>
-    <%=link_to t("action.created_asc"), tasks_path(sort: "created_asc")%>
-    <%=link_to t("action.created_desc"), tasks_path(sort: "created_desc")%>
+    <%=link_to t("action.created_asc"), tasks_path(column: "created_at", direction: "asc")%>
+    <%=link_to t("action.created_desc"), tasks_path(column: "created_at", direction: "desc")%>
 
     <span><%=t("action.end_time")%>：</span>
-    <%=link_to t("action.end_asc"), tasks_path(sort: "end_time_asc")%>
-    <%=link_to t("action.end_desc"), tasks_path(sort: "end_time_desc")%>
+    <%=link_to t("action.end_asc"), tasks_path(column: "end_time", direction: "asc")%>
+    <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
   </div>
 
 
