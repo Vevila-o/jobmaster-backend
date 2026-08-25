@@ -1,11 +1,34 @@
 # task e2e Test
 
 require "rails_helper"
-RSpec.describe "Task", type: :system, js: true do
+RSpec.describe "Task", type: :system do
   subject { page }
-  let!(:task) { Task.create!(title: "test1", content: "test", created_at: Time.zone.now) }
 
-  context "new" do
+  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now) }
+
+  context "when new" do
+    before do
+      task
+      visit tasks_path
+      visit new_task_path
+
+      fill_in Task.human_attribute_name(:title), with: "task1"
+      fill_in Task.human_attribute_name(:content), with: "test"
+      fill_in Task.human_attribute_name(:end_time), with: Time.zone.parse("2026-08-21 08:00")
+
+      click_button I18n.t("helpers.submit.create", model: Task.model_name.human)
+    end
+
+    it { is_expected.to have_content(I18n.t("tasks.create.success")) }
+    it { is_expected.to have_content("task1") }
+  end
+
+  context "when new_task without end_time" do
+    let(:blank_error) { I18n.t(
+      "errors.format",
+      attribute: Task.human_attribute_name(:end_time),
+      message: I18n.t("errors.messages.blank"))}
+
     before do
       visit tasks_path
       click_link I18n.t("navigation.new_task_path")
@@ -15,12 +38,12 @@ RSpec.describe "Task", type: :system, js: true do
       click_button I18n.t("helpers.submit.create", model: Task.model_name.human)
     end
 
-    it { is_expected.to have_content(I18n.t("tasks.create.success")) }
-    it { is_expected.to have_content("task1") }
+    it { is_expected.to have_content(blank_error) }
   end
 
-  context "edit" do
+  context "when edit task" do
     before do
+      task
       visit tasks_path
       click_link I18n.t("action.edit")
 
@@ -29,16 +52,16 @@ RSpec.describe "Task", type: :system, js: true do
       click_button I18n.t("helpers.submit.update", model: Task.model_name.human)
     end
 
-    it { is_expected.to have_content(I18n.t("tasks.update.success")) }
-    it { is_expected.to have_content("task1") }
+    it { is_expected.to have_text("task1") }
+    it { is_expected.to have_text("test") }
   end
 
-  context "delete" do
+
+  context "when delete task" do
     before do
+      task
       visit tasks_path
-      accept_confirm do
         click_link I18n.t("action.delete")
-      end
     end
 
     it { is_expected.to have_content(I18n.t("tasks.destroy.success")) }
@@ -46,25 +69,103 @@ RSpec.describe "Task", type: :system, js: true do
   end
 
   describe "sort" do
-    subject { page.text.index("test0") }
-    let!(:older_task) { Task.create!(title: "test0", content: "test0", created_at: 1.day.ago) }
+    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.day.from_now) }
 
-    context "created_asc" do
-      before do
-        visit tasks_path
-        click_link I18n.t("action.created_asc")
-        expect(page).to have_current_path(tasks_path(sort: "created_asc"))
-      end
-      it { is_expected.to be < page.text.index("test1") }
+    before do
+      task
+      older_task
+      visit tasks_path
     end
 
-    context "created_desc" do
+    context "when sorted by created_asc" do
       before do
-        visit tasks_path
-        click_link I18n.t("action.created_desc")
-        expect(page).to have_current_path(tasks_path(sort: "created_desc"))
+        click_link I18n.t("action.created_asc")
       end
-      it { is_expected.to be > page.text.index("test1") }
+
+      it { expect(page).to have_current_path(tasks_path(column: "created_at", direction: "asc")) }
+      it { expect(page).to have_css("div:first-of-type", text: "test0") }
+    end
+
+    context "when sorted by created_desc" do
+      before do
+        click_link I18n.t("action.created_desc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(column: "created_at", direction: "desc")) }
+      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+    end
+
+    context "when sorted by end_time_asc" do
+      before do
+        click_link I18n.t("action.end_asc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "asc")) }
+      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+    end
+
+    context "when sorted by end_time_desc" do
+      before do
+        click_link I18n.t("action.end_desc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "desc")) }
+
+      it { expect(page).to have_css("div:first-of-type", text: "test0") }
+    end
+  end
+
+  # requests test
+  context "with POST /tasks", type: :request do
+    subject(:create_task) { post tasks_path, params: params }
+
+    context "with valid parameters" do
+      let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
+
+      it { expect { create_task }.to change(Task, :count).by(1) }
+
+      it "redirects to tasks_path" do
+        create_task
+        expect(response).to redirect_to(tasks_path)
+      end
+    end
+
+    context "when end_time is blank" do
+      let(:params) { { task: { title: "test2", content: "nice" } } }
+
+      it "is 422" do
+        create_task
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "does not create a task" do
+        expect { create_task }.not_to change(Task, :count)
+      end
+    end
+  end
+
+  context "with PATCH /task/:id", type: :request do
+    let(:update_params) { { task: { title: "nice try", content: "nice" } } }
+
+    context "when task is updated" do
+      before do
+        patch task_path(task), params: update_params
+        task.reload
+      end
+
+      it { expect(task).to have_attributes(title: "nice try", content: "nice") }
+    end
+  end
+
+  context "with DELETE /tasks/:id", type: :request do
+    before do
+      task
+    end
+
+    it "delete task from db" do
+      expect {
+        delete task_path(task)
+      }.to change(Task, :count).by(-1)
     end
   end
 end

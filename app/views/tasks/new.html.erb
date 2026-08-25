@@ -1,7 +1,10 @@
-    <% content_for(:title) { t(".title") }  %>
+    <% content_for(:title) { t(".title") } %>
 
-    <%=render "form", task:@task %>
+    <%= form_for(@task) do |f| %>
+
+      <%= render "fields", f: f, task: @task %>
+      
+    <% end %>
 
     <br />
     <%= link_to t("navigation.tasks_path"), tasks_path %>
-

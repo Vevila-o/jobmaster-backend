@@ -5,4 +5,5 @@
         id: 編號
         title: 標題
         content: 內容
+        end_time: 結束時間
   

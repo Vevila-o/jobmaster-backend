@@ -55,6 +55,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # RSpec-specific style and best-practice checks [https://github.com/rubocop/rubocop-rspec]
+  gem "rubocop-rspec", require: false
 end
 
 group :development do
@@ -70,6 +73,12 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "database_cleaner-active_record"
+
+  # Fixtures replacement with a straightforward definition syntax [https://github.com/thoughtbot/factory_bot]
+  gem "factory_bot_rails"
+
+  # Generate fake test data [https://github.com/faker-ruby/faker]
+  gem "faker"
 end
 
 # erb_lint
@@ -77,3 +86,5 @@ gem "erb_lint", "~> 0.9.0"
 
 # i18n
 gem "rails-i18n"
+
+gem "tailwindcss-rails", "~> 4.6"
