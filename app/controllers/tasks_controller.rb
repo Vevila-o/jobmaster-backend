@@ -1,12 +1,11 @@
 
 class TasksController < ApplicationController
   before_action :set_task, only: [ :edit, :update, :destroy ]
-  ALLOWED_COLUMNS = [ "end_time", "created_at" ]
-  ALLOWED_DIRECTIONS = [ "asc", "desc" ]
+
 
   def index
-    column = pick_sort(params[:column], allowed: ALLOWED_COLUMNS, default: "created_at")
-    direction = pick_sort(params[:direction], allowed: ALLOWED_DIRECTIONS, default: "desc")
+    direction = params[:direction]
+    column = params[:column]
     @tasks = Task.sorted_by(column: column, direction: direction)
   end
 
@@ -57,9 +56,4 @@ class TasksController < ApplicationController
     def task_params
       params.require(:task).permit(:title, :content, :end_time)
     end
-    def pick_sort(input, allowed:, default:)
-      allowed.include?(input) ? input : default
-    end
-
-  # 修改
 end
