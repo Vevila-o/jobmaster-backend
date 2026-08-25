@@ -50,11 +50,11 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :rack_test
   end
-
-  config.before(:each, :js, type: :system) do
-    driven_by :selenium_chrome_headless
-    sleep 0.25.seconds
-  end
+  # 現在測試沒有要用到js 先註解掉
+  # config.before(:each, :js, type: :system) do
+  #   driven_by :selenium_chrome_headless
+  #   sleep 0.25.seconds
+  # end
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
   end

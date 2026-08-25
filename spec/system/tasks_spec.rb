@@ -1,15 +1,16 @@
 # task e2e Test
 
 require "rails_helper"
-RSpec.describe "Task", :js, type: :system do
+RSpec.describe "Task", type: :system do
   subject { page }
 
   let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now) }
 
   context "when new" do
     before do
+      task
       visit tasks_path
-      click_link I18n.t("navigation.new_task_path")
+      visit new_task_path
 
       fill_in Task.human_attribute_name(:title), with: "task1"
       fill_in Task.human_attribute_name(:content), with: "test"
@@ -60,9 +61,7 @@ RSpec.describe "Task", :js, type: :system do
     before do
       task
       visit tasks_path
-      accept_confirm do
         click_link I18n.t("action.delete")
-      end
     end
 
     it { is_expected.to have_content(I18n.t("tasks.destroy.success")) }
@@ -117,13 +116,13 @@ RSpec.describe "Task", :js, type: :system do
   end
 
   # requests test
-  describe Task, "POST /tasks", type: :request do
+  context "with POST /tasks", type: :request do
     subject(:create_task) { post tasks_path, params: params }
 
     context "with valid parameters" do
       let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
 
-      it { expect { create_task }.to change(described_class, :count).by(1) }
+      it { expect { create_task }.to change(Task, :count).by(1) }
 
       it "redirects to tasks_path" do
         create_task
@@ -140,12 +139,12 @@ RSpec.describe "Task", :js, type: :system do
       end
 
       it "does not create a task" do
-        expect { create_task }.not_to change(described_class, :count)
+        expect { create_task }.not_to change(Task, :count)
       end
     end
   end
 
-  describe Task, "PATCH /task/:id", type: :request do
+  context "with PATCH /task/:id", type: :request do
     let(:update_params) { { task: { title: "nice try", content: "nice" } } }
 
     context "when task is updated" do
@@ -158,7 +157,7 @@ RSpec.describe "Task", :js, type: :system do
     end
   end
 
-  describe Task, "DELETE /tasks/:id", type: :request do
+  context "with DELETE /tasks/:id", type: :request do
     before do
       task
     end
@@ -166,7 +165,7 @@ RSpec.describe "Task", :js, type: :system do
     it "delete task from db" do
       expect {
         delete task_path(task)
-      }.to change(described_class, :count).by(-1)
+      }.to change(Task, :count).by(-1)
     end
   end
 end

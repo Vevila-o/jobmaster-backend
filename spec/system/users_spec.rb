@@ -1,7 +1,7 @@
 # User e2e Test
 
 require "rails_helper"
-RSpec.describe "User", :js, type: :system do
+RSpec.describe "User", type: :system do
   subject { page }
 
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
@@ -12,8 +12,9 @@ RSpec.describe "User", :js, type: :system do
 
   context "when creating a new user" do
     before do
+      user
       visit users_path
-      click_link I18n.t("navigation.new_user_path")
+      visit new_user_path
 
       fill_in User.human_attribute_name(:name), with: "路人1"
       fill_in User.human_attribute_name(:email), with: "mob@test.com"
@@ -46,13 +47,11 @@ RSpec.describe "User", :js, type: :system do
     end
   end
 
-  context "when deleting a user" do
+  context "when deleting a user"  do
     before do
       user
       visit users_path
-      accept_confirm do
         click_link I18n.t("action.delete")
-      end
     end
 
     it { is_expected.to have_content(I18n.t("users.destroy.success")) }
@@ -60,13 +59,13 @@ RSpec.describe "User", :js, type: :system do
   end
 
   # requests test
-  describe User, "POST /users", type: :request do
+  context "with POST /users", type: :request do
     let(:user_params) { { user: { name: "test", email: "test@test.t", password: "test", role: "normal" } } }
 
     it "increases User" do
       expect {
         post users_path, params: user_params
-      }.to change(described_class, :count).by(1)
+      }.to change(User, :count).by(1)
     end
 
     it "redirects to users_path" do
@@ -75,7 +74,7 @@ RSpec.describe "User", :js, type: :system do
     end
   end
 
-  describe User, "PATCH /users/:id", type: :request do
+  context "with PATCH /users/:id", type: :request do
     let(:new_params) { { user: { name: "勇者一" } } }
 
     context "when updating user" do
@@ -95,17 +94,17 @@ RSpec.describe "User", :js, type: :system do
     end
   end
 
-  describe User, "DELETE /users/:id", type: :request do
+  context "with DELETE /users/:id", type: :request do
     before { user }
 
     it "deletes user from db" do
       expect {
         delete user_path(user)
-      }.to change(described_class, :count).by(-1)
+      }.to change(User, :count).by(-1)
     end
   end
 
-  describe User, "#role", type: :request do
+  context "when updating role", type: :request do
     # 目前還沒有登入控制，假定現在都是一般使用者
     let(:role_params) { { user: { role: "adminstrator" } } }
 
