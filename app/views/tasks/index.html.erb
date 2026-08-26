@@ -10,7 +10,7 @@
     <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
   </div>
 
-    <%=form_with url: tasks_path, method: :get do |f|%>
+    <%=form_with model: @search_form, url: tasks_path, method: :get do |f|%>
     
     <div style="margin: 10px 0px">
       <%= f.label :title, Task.human_attribute_name(:title) %>
@@ -19,7 +19,7 @@
     
       <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] } , selected: params[:status], include_blank: true%>
 
-      <%= f.submit %>
+      <%= f.submit t("action.search") %>
     </div>
     <hr>
 

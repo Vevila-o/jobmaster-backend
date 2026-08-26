@@ -4,9 +4,8 @@ class TasksController < ApplicationController
 
 
   def index
-    @tasks =Task.all
-    @tasks = @tasks.where("title LIKE ?", "%#{params[:title]}%") if params[:title].present?
-    @tasks = @tasks.where(status: params[:status]) if params[:status].present?
+    @search_form = TaskSearchForm.new(search_params)
+    @tasks = @search_form.search
     direction = params[:direction]
     column = params[:column]
     @tasks = @tasks.sorted_by(column: column, direction: direction)
@@ -58,5 +57,9 @@ class TasksController < ApplicationController
 
     def task_params
       params.require(:task).permit(:title, :content, :end_time, :status)
+    end
+
+    def search_params
+      params.fetch(:task_search_form, {}).permit(:title, :status)
     end
 end
