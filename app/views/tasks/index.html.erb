@@ -10,6 +10,7 @@
     <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
   </div>
 
+    
 
       <div>
         <div class= "flex gap-4">
@@ -17,6 +18,7 @@
           <div><%=Task.human_attribute_name(:title) %></div>
           <div><%=Task.human_attribute_name(:content)%> </div>
           <div><%=Task.human_attribute_name(:end_time)%></div>
+          <div><%=Task.human_attribute_name(:status)%></div>
         </div>
         <div>
 

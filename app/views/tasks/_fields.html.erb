@@ -8,13 +8,18 @@
     <br>
     
     <br>
-    <%= f.label :title, Task.human_attribute_name(:title) %>
-    <%= f.text_field :title %> <br />
 
-    <%= f.label :content, Task.human_attribute_name(:content) %>
-    <%= f.text_field :content %> <br />
+      <%= f.label :title, Task.human_attribute_name(:title) %>
+      <%= f.text_field :title %> <br />
 
-    <%= f.label :end_time, Task.human_attribute_name(:end_time)%>
-    <%= f.datetime_field :end_time %> <br />
+      <%= f.label :content, Task.human_attribute_name(:content) %>
+      <%= f.text_field :content %> <br />
 
-    <%= f.submit %>
+      <%= f.label :end_time, Task.human_attribute_name(:end_time)%>
+      <%= f.datetime_field :end_time %> <br />
+
+      <%= f.label :status, Task.human_attribute_name(:status)%>
+      <%= f.select :status, Task.statuses.keys.map { |x| [I18n.t("activerecord.attributes.task.statuses.#{x}"), x] } %> <br />
+
+      <%= f.submit %>
+
