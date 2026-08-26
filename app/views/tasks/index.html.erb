@@ -23,10 +23,10 @@
     
     <div style="margin: 10px 0px">
       <%= f.label :title, Task.human_attribute_name(:title) %>
-      <%= f.text_field :title, value: params[:title] %> 
+      <%= f.text_field :title %> 
       <%= f.label :status, Task.human_attribute_name(:status)%>
     
-      <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] } , selected: params[:status], include_blank: true%>
+      <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] }, include_blank: true%>
 
       <%= f.submit t("action.search") %>
     </div>
