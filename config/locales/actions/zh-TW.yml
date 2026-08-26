@@ -9,4 +9,6 @@
     end_time: 結束時間
     end_asc: 結束最早
     end_desc: 結束最晚
+    search: 查詢
+    send: 送出
   

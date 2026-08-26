@@ -1,7 +1,7 @@
     <% content_for(:title) { t(".title") } %>
 
     <turbo-frame id="<%=dom_id(@task)%>">
-      <%= form_for(@task) do |f| %>
+      <%= form_with model: @task do |f| %>
         <%= render "fields", f: f, task: @task %>
       <% end %>
     </turbo-frame>

@@ -4,9 +4,11 @@ class TasksController < ApplicationController
 
 
   def index
+    @search_form = TaskSearchForm.new(search_params)
+    @tasks = @search_form.search
     direction = params[:direction]
     column = params[:column]
-    @tasks = Task.sorted_by(column: column, direction: direction)
+    @tasks = @tasks.sorted_by(column: column, direction: direction)
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面
@@ -54,6 +56,10 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:title, :content, :end_time)
+      params.require(:task).permit(:title, :content, :end_time, :status)
+    end
+
+    def search_params
+      params.fetch(:task_search_form, {}).permit(:title, :status)
     end
 end

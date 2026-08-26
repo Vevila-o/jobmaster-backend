@@ -1,6 +1,6 @@
     <% content_for(:title) { t(".title") } %> 
 
-  <div style="margin: 15px 0px">
+  <div style="margin: 10px 0px">
     <span> <%=t("action.created_at")%>：</span>
     <%=link_to t("action.created_asc"), tasks_path(column: "created_at", direction: "asc")%>
     <%=link_to t("action.created_desc"), tasks_path(column: "created_at", direction: "desc")%>
@@ -10,23 +10,45 @@
     <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
   </div>
 
+    
+
+    <%=form_with model: @search_form, url: tasks_path, method: :get do |f|%>
+    <% if @search_form.errors.any? %>
+      <div class="error-msg">
+        <% @search_form.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
+      </div>
+    <% end %>
+    
+    <div style="margin: 10px 0px">
+      <%= f.label :title, Task.human_attribute_name(:title) %>
+      <%= f.text_field :title %> 
+      <%= f.label :status, Task.human_attribute_name(:status)%>
+    
+      <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] }, include_blank: true%>
+
+      <%= f.submit t("action.search") %>
+    </div>
+    <hr>
 
       <div>
-        <div class= "flex gap-4">
+        <div class= "flex gap-4" style="margin: 12px 0px">
           <div><%=Task.human_attribute_name(:id) %></div>
           <div><%=Task.human_attribute_name(:title) %></div>
           <div><%=Task.human_attribute_name(:content)%> </div>
           <div><%=Task.human_attribute_name(:end_time)%></div>
+          <div><%=Task.human_attribute_name(:status)%></div>
         </div>
         <div>
 
           <% @tasks.each do |task| %>
-          
-          <%=render "task", task: task %>
-         
+            <%=render "task", task: task %>
           <% end %> 
         </div>
       </div>
+
+    <%end%>
       <br>
 
     <%= link_to t("navigation.new_task_path"), new_task_path %>

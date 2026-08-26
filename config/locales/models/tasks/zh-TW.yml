@@ -6,4 +6,13 @@
         title: 標題
         content: 內容
         end_time: 結束時間
-  
+        status: 狀態
+        statuses:
+          pending: 待處理
+          in_progress: 進行中
+          completed: 完成
+      
+  activemodel:
+    attributes:
+      task_search_form:
+        status: 狀態

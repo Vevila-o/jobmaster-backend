@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :task do
-    title { "test" }
-    content { "test" }
+    title { Faker::Lorem.sentence }
+    content { Faker::Lorem.paragraph }
     created_at { Time.zone.now }
-    end_time { 1.day.from_now }
+    status { Task.statuses.keys.sample }
+    end_time { Faker::Date.between(from: 1.year.ago, to: 1.year.from_now) }
   end
 end

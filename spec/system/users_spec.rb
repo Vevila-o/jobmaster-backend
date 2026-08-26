@@ -6,10 +6,6 @@ RSpec.describe "User", type: :system do
 
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
 
-  # before do
-  #   sleep 0.1.seconds
-  # end
-
   context "when creating a new user" do
     before do
       user

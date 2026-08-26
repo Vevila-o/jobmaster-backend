@@ -1,9 +1,7 @@
     <% content_for(:title) { t(".title") } %>
 
-    <%= form_for(@task) do |f| %>
-
+    <%= form_with model: @task do |f| %>
       <%= render "fields", f: f, task: @task %>
-      
     <% end %>
 
     <br />
