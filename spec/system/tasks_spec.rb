@@ -4,8 +4,7 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
-  let(:tasks) { FactoryBot.create_list(:task, 10) }
-  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now) }
+  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending") }
 
   context "when new" do
     before do
@@ -115,6 +114,60 @@ RSpec.describe "Task", type: :system do
       it { expect(page).to have_css("div:first-of-type", text: "test0") }
     end
   end
+
+  describe "search" do
+    let(:test_task) { FactoryBot.create(:task, title: "test_task", content: "test_task", end_time: 1.day.from_now, status: "in_progress") }
+
+    before do
+      task
+      test_task
+      visit tasks_path
+    end
+
+    context "when search title and status" do
+    before do
+        fill_in Task.human_attribute_name(:title), with: "test_task"
+        select I18n.t("activerecord.attributes.task.statuses.in_progress"), from: Task.human_attribute_name(:status)
+        click_button I18n.t("action.search")
+      end
+
+      it { is_expected.to have_content("test_task") }
+      it { is_expected.not_to have_content("test1") }
+    end
+
+
+    context "when only search title" do
+    before do
+        fill_in Task.human_attribute_name(:title), with: "test_task"
+        click_button I18n.t("action.search")
+      end
+
+      it { is_expected.to have_content("test_task") }
+      it { is_expected.not_to have_content("test1") }
+    end
+
+    context "when only search status" do
+    before do
+        select I18n.t("activerecord.attributes.task.statuses.in_progress"), from: Task.human_attribute_name(:status)
+        click_button I18n.t("action.search")
+      end
+
+      it { is_expected.to have_content("test_task") }
+      it { is_expected.not_to have_content("test1") }
+    end
+
+    context "when search empty" do
+    before do
+        fill_in Task.human_attribute_name(:title), with: nil
+        select "", from: Task.human_attribute_name(:status)
+        click_button I18n.t("action.search")
+      end
+
+      it { is_expected.to have_content("test_task").and have_content("test1") }
+    end
+  end
+
+
 
   # requests test
   context "with POST /tasks", type: :request do

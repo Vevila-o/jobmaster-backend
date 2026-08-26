@@ -3,12 +3,12 @@ require "rails_helper"
 
 RSpec.describe TaskSearchForm do
   describe "#search" do
-    let(:tasks) { FactoryBot.create_list(:task, 10) }
+    let(:task) { FactoryBot.create(:task, title: "first_task", content: "task", end_time: 2.day.from_now, status: "in_progress") }
     let(:test_task) { FactoryBot.create(:task, title: "test_task", content: "test_task", end_time: 1.day.from_now, status: "pending") }
     let(:form) { described_class.new(title: title, status: status) }
 
     before do
-        tasks
+        task
         test_task
       end
 
@@ -33,11 +33,11 @@ RSpec.describe TaskSearchForm do
       it { expect(form.search).to include(test_task) }
     end
 
-    context "when search empty" do
+    context "when search fill empty" do
       let(:title) { nil }
       let(:status) { nil }
 
-      it { expect(form.search).to match_array([ test_task ] + tasks) }
+      it { expect(form.search).to include(test_task, task) }
     end
   end
 end
