@@ -4,9 +4,12 @@ class TasksController < ApplicationController
 
 
   def index
+    @tasks =Task.all
+    @tasks = @tasks.where("title LIKE ?", "%#{params[:title]}%") if params[:title].present?
+    @tasks = @tasks.where(status: params[:status]) if params[:status].present?
     direction = params[:direction]
     column = params[:column]
-    @tasks = Task.sorted_by(column: column, direction: direction)
+    @tasks = @tasks.sorted_by(column: column, direction: direction)
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面

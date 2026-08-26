@@ -19,7 +19,7 @@
       <%= f.datetime_field :end_time %> <br />
 
       <%= f.label :status, Task.human_attribute_name(:status)%>
-      <%= f.select :status, Task.statuses.keys.map { |x| [I18n.t("activerecord.attributes.task.statuses.#{x}"), x] } %> <br />
+      <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] } %> <br />
 
       <%= f.submit %>
 

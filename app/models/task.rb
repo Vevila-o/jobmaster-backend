@@ -1,5 +1,5 @@
 class Task < ApplicationRecord
-  enum :status, { pending: 0, in_progress: 1, completed: 2 }, default: :pending
+  enum :status, { pending: :pending, in_progress: :in_progress, completed: :completed }, default: :pending
 
   ALLOWED_COLUMNS = [ "end_time", "created_at" ]
 
