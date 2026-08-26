@@ -4,6 +4,7 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
+  let(:tasks) { FactoryBot.create_list(:task, 10) }
   let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now) }
 
   context "when new" do
