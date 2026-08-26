@@ -10,7 +10,16 @@
     <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
   </div>
 
+    
+
     <%=form_with model: @search_form, url: tasks_path, method: :get do |f|%>
+    <% if @search_form.errors.any? %>
+      <div class="error-msg">
+        <% @search_form.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
+      </div>
+    <% end %>
     
     <div style="margin: 10px 0px">
       <%= f.label :title, Task.human_attribute_name(:title) %>

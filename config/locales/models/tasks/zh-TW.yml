@@ -12,4 +12,7 @@
           in_progress: 進行中
           completed: 完成
       
-  
+  activemodel:
+    attributes:
+      task_search_form:
+        status: 狀態
