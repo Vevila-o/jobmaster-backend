@@ -1,7 +1,8 @@
 class Task < ApplicationRecord
   enum :status, { pending: :pending, in_progress: :in_progress, completed: :completed }, default: :pending
+  enum :priority, { high: :high, medium: :medium, low: :low }, default: :low
 
-  ALLOWED_COLUMNS = [ "end_time", "created_at" ]
+  ALLOWED_COLUMNS = [ "end_time", "created_at", "priority" ]
 
   # sort
   scope :sorted_by, ->(column:, direction: :ASC) {

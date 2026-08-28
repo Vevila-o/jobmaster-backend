@@ -9,6 +9,10 @@
     end_time: 結束時間
     end_asc: 結束最早
     end_desc: 結束最晚
+    priority: 優先度
+    priority_asc: 由高到低
+    priority_desc: 由低到高
     search: 查詢
     send: 送出
+
   

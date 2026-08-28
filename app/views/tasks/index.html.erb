@@ -8,6 +8,10 @@
     <span><%=t("action.end_time")%>：</span>
     <%=link_to t("action.end_asc"), tasks_path(column: "end_time", direction: "asc")%>
     <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
+
+    <span><%=t("action.priority")%>：</span>
+    <%=link_to t("action.priority_asc"), tasks_path(column: "priority", direction: "asc")%>
+    <%=link_to t("action.priority_desc"), tasks_path(column: "priority", direction: "desc")%>
   </div>
 
     
@@ -39,6 +43,7 @@
           <div><%=Task.human_attribute_name(:content)%> </div>
           <div><%=Task.human_attribute_name(:end_time)%></div>
           <div><%=Task.human_attribute_name(:status)%></div>
+          <div><%=Task.human_attribute_name(:priority)%></div>
         </div>
         <div>
 
