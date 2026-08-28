@@ -8,7 +8,13 @@ class Task < ApplicationRecord
   scope :sorted_by, ->(column:, direction: :ASC) {
     column = "created_at" unless ALLOWED_COLUMNS.include?(column.to_s)
     direction = :ASC unless %i[ASC DESC].include?(direction.to_s.upcase.to_sym)
-    order(column => direction) }
+
+    if column == "priority"
+    order(Arel.sql("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 END #{direction}"))
+    else
+      order(column => direction)
+    end
+    }
 
 
 
