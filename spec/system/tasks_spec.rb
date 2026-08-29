@@ -4,7 +4,7 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
-  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending") }
+  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
 
   context "when new" do
     before do
@@ -69,7 +69,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "sort" do
-    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.day.from_now) }
+    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.day.from_now, priority: "low") }
 
     before do
       task
@@ -112,6 +112,47 @@ RSpec.describe "Task", type: :system do
       it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "desc")) }
 
       it { expect(page).to have_css("div:first-of-type", text: "test0") }
+    end
+  end
+
+  describe "priority sort" do
+    let(:second_task)  { Task.create(title: "test2", created_at: 4.day.from_now, end_time: 3.days.from_now, priority: "medium") }
+    let(:third_task) { Task.create(title: "test3",  created_at: 5.day.from_now, end_time: 4.days.from_now, priority: "high") }
+
+    before do
+      task
+      second_task
+      third_task
+    end
+
+    context "when sorted by priority_asc" do
+      before do
+        visit tasks_path
+        click_link I18n.t("action.priority_asc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(column: "priority", direction: "asc")) }
+
+      it { expect(page).to have_css("div:first-of-type", text: "test3") }
+    end
+
+    context "when sorted by priority_desc" do
+      before do
+      visit tasks_path
+        click_link I18n.t("action.priority_desc")
+      end
+
+      it { expect(page).to have_current_path(tasks_path(column: "priority", direction: "desc")) }
+
+      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+    end
+
+    context "when invalid params URL input" do
+      before do
+        visit tasks_path(column: "aaa", direction: "asc")
+      end
+
+      it { expect(page).to have_css("div:first-of-type", text: "test1") }
     end
   end
 
