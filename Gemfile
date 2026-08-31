@@ -87,4 +87,8 @@ gem "erb_lint", "~> 0.9.0"
 # i18n
 gem "rails-i18n"
 
+# tailwind css
 gem "tailwindcss-rails", "~> 4.6"
+
+# pagy
+gem "pagy", ">= 43.6"
