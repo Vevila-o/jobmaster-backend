@@ -148,6 +148,41 @@ RSpec.describe "Task", type: :system do
     end
   end
 
+  describe "#pagy" do
+    let(:total) { 15 }
+    let(:per_page) { Pagy::OPTIONS[:limit] }
+
+    before do
+      create_list(:task, total)
+      visit tasks_path
+    end
+
+    context "when tasks on first page" do
+      it { is_expected.to have_css("turbo-frame", count: per_page) }
+    end
+
+    context "when move to next page" do
+      before do
+        find("a[aria-label='Next']").click
+      end
+
+      it { is_expected.to have_css("turbo-frame", count: total - per_page) }
+    end
+
+    context "when move to next page with search condition" do
+      let(:target) { 10 }
+
+      before do
+        Array.new(target) { |i| create(:task, title: "target#{i}") }
+        fill_in Task.human_attribute_name(:title), with: "target"
+        click_button I18n.t("action.search")
+        find("a[aria-label='Next']").click
+      end
+
+      it { is_expected.to have_css("turbo-frame", count: target - per_page) }
+    end
+  end
+
   describe "search" do
     let(:test_task) { FactoryBot.create(:task, title: "test_task", content: "test_task", end_time: 1.day.from_now, status: "in_progress") }
 
