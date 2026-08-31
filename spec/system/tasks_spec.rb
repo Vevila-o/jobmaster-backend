@@ -116,7 +116,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "priority sort" do
-    let(:second_task)  { Task.create(title: "test2", created_at: 4.day.from_now, end_time: 3.days.from_now, priority: "medium") }
+    let(:second_task)  { Task.create(title: "test2", created_at: 4.days.from_now, end_time: 3.days.from_now, priority: "medium") }
     let(:third_task) { Task.create(title: "test3",  created_at: 5.day.from_now, end_time: 4.days.from_now, priority: "high") }
 
     before do
