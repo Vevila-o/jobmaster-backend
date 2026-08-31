@@ -533,7 +533,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
-  pagy (>= 43.6)
+  pagy (~> 43.6)
   pg
   propshaft
   puma (>= 5.0)

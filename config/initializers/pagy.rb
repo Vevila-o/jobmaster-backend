@@ -1,2 +1,2 @@
 
-Pagy::OPTIONS[:limit] = 2
+Pagy::OPTIONS[:limit] = 3

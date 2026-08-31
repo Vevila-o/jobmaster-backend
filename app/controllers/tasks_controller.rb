@@ -9,7 +9,7 @@ class TasksController < ApplicationController
     direction = params[:direction]
     column = params[:column]
     @tasks = @tasks.sorted_by(column: column, direction: direction)
-    @pagy, @tasks = pagy(@tasks)
+    @pagy, @tasks = pagy(:offset, @tasks)
   end
 
   # new 不是 create!! 這個是暫時存在記憶體裡面
