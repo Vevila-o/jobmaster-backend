@@ -10,7 +10,7 @@ class Task < ApplicationRecord
     direction = :ASC unless %i[ASC DESC].include?(direction.to_s.upcase.to_sym)
 
     if column == "priority"
-    order(Arel.sql("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 END "))
+      order(Arel.sql("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 END") => direction)
     else
       order(column => direction)
     end
