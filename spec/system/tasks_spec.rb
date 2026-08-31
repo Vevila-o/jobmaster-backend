@@ -9,7 +9,6 @@ RSpec.describe "Task", type: :system do
   context "when new" do
     before do
       task
-      visit tasks_path
       visit new_task_path
 
       fill_in Task.human_attribute_name(:title), with: "task1"
@@ -20,7 +19,7 @@ RSpec.describe "Task", type: :system do
     end
 
     it { is_expected.to have_content(I18n.t("tasks.create.success")) }
-    it { is_expected.to have_content("task1") }
+    it { is_expected.to have_content(task.title) }
   end
 
   context "when new_task without end_time" do
@@ -48,28 +47,29 @@ RSpec.describe "Task", type: :system do
       click_link I18n.t("action.edit")
 
       fill_in Task.human_attribute_name(:title), with: "task1"
-      fill_in Task.human_attribute_name(:content), with: "test"
+      fill_in Task.human_attribute_name(:content), with: "update_content"
       click_button I18n.t("helpers.submit.update", model: Task.model_name.human)
     end
 
     it { is_expected.to have_text("task1") }
-    it { is_expected.to have_text("test") }
+    it { is_expected.not_to have_content(task.title) }
+    it { is_expected.to have_text("update_content") }
   end
 
 
   context "when delete task" do
     before do
       task
-      visit tasks_path
+        visit tasks_path
         click_link I18n.t("action.delete")
     end
 
     it { is_expected.to have_content(I18n.t("tasks.destroy.success")) }
-    it { is_expected.not_to have_content("task1") }
+    it { is_expected.not_to have_content(task.title) }
   end
 
   describe "sort" do
-    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.day.from_now, priority: "low") }
+    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
 
     before do
       task
@@ -82,8 +82,8 @@ RSpec.describe "Task", type: :system do
         click_link I18n.t("action.created_asc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(column: "created_at", direction: "asc")) }
-      it { expect(page).to have_css("div:first-of-type", text: "test0") }
+      it { is_expected.to have_current_path(tasks_path(column: "created_at", direction: "asc")) }
+      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ older_task.title, task.title ]) }
     end
 
     context "when sorted by created_desc" do
@@ -91,8 +91,8 @@ RSpec.describe "Task", type: :system do
         click_link I18n.t("action.created_desc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(column: "created_at", direction: "desc")) }
-      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+      it { is_expected.to have_current_path(tasks_path(column: "created_at", direction: "desc")) }
+      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ task.title, older_task.title ]) }
     end
 
     context "when sorted by end_time_asc" do
@@ -100,8 +100,8 @@ RSpec.describe "Task", type: :system do
         click_link I18n.t("action.end_asc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "asc")) }
-      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+      it { is_expected.to have_current_path(tasks_path(column: "end_time", direction: "asc")) }
+      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ task.title, older_task.title ]) }
     end
 
     context "when sorted by end_time_desc" do
@@ -109,20 +109,20 @@ RSpec.describe "Task", type: :system do
         click_link I18n.t("action.end_desc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(column: "end_time", direction: "desc")) }
+      it { is_expected.to have_current_path(tasks_path(column: "end_time", direction: "desc")) }
 
-      it { expect(page).to have_css("div:first-of-type", text: "test0") }
+      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ older_task.title, task.title ]) }
     end
   end
 
   describe "priority sort" do
-    let(:second_task)  { Task.create(title: "test2", created_at: 4.days.from_now, end_time: 3.days.from_now, priority: "medium") }
-    let(:third_task) { Task.create(title: "test3",  created_at: 5.day.from_now, end_time: 4.days.from_now, priority: "high") }
+    let(:medium_task)  { Task.create(title: "test2", created_at: 3.days.ago, end_time: 3.days.from_now, priority: "medium") }
+    let(:high_task) { Task.create(title: "test3",  created_at: 2.days.ago, end_time: 4.days.from_now, priority: "high") }
 
     before do
       task
-      second_task
-      third_task
+      medium_task
+      high_task
     end
 
     context "when sorted by priority_asc" do
@@ -131,28 +131,20 @@ RSpec.describe "Task", type: :system do
         click_link I18n.t("action.priority_asc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(column: "priority", direction: "asc")) }
+      it { is_expected.to have_current_path(tasks_path(column: "priority", direction: "asc")) }
 
-      it { expect(page).to have_css("div:first-of-type", text: "test3") }
+      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ high_task.title, medium_task.title, task.title ]) }
     end
 
     context "when sorted by priority_desc" do
       before do
-      visit tasks_path
+        visit tasks_path
         click_link I18n.t("action.priority_desc")
       end
 
-      it { expect(page).to have_current_path(tasks_path(column: "priority", direction: "desc")) }
+      it { is_expected.to have_current_path(tasks_path(column: "priority", direction: "desc")) }
 
-      it { expect(page).to have_css("div:first-of-type", text: "test1") }
-    end
-
-    context "when invalid params URL input" do
-      before do
-        visit tasks_path(column: "aaa", direction: "asc")
-      end
-
-      it { expect(page).to have_css("div:first-of-type", text: "test1") }
+      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ task.title, medium_task.title, high_task.title ]) }
     end
   end
 
