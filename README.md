@@ -9,7 +9,7 @@ Things you may want to cover:
 
 | tool | version |
 |---|---|
-| Ruby | **3.3.11** |
+| Ruby | **4.0.5** |
 | Rails | **8.1.3.1** |
 | PostgreSQL | **18.4** |
 
@@ -26,9 +26,9 @@ erDiagram
     USER {
         int id PK
         string name
-        int role
+        string role
         string email
-        string password
+        string password_digest
     }
  
     TASK {
@@ -37,8 +37,8 @@ erDiagram
         string content
         datetime start_time
         datetime end_time
-        int status
-        int priority
+        string status
+        string priority
         datetime created_at
         int user_id FK
     }
@@ -61,8 +61,10 @@ erDiagram
 
 ### Tasks
 
-- `/tasks`：任務列表，預設以建立時間排序（`?sort=created_desc` 可切換為新到舊）
-- `/tasks/new`：新增任務（`title` 必填，`content` 選填）
+- `/tasks`：任務列表
+  - 排序：`?column=created_at|end_time` 搭配 `?direction=asc|desc`
+  - 查詢：`?task_search_form[title]=關鍵字`（標題模糊比對）、`?task_search_form[status]=pending|in_progress|completed`（狀態篩選），可單獨或組合使用；不給條件則顯示全部
+- `/tasks/new`：新增任務（`title`、`end_time` 必填，`content` 選填，`status` 預設為 `pending`）
 - `/tasks/:id/edit`：編輯任務
 - 刪除任務：於列表頁對該筆任務執行刪除
 

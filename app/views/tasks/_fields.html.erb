@@ -21,5 +21,8 @@
       <%= f.label :status, Task.human_attribute_name(:status)%>
       <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] } %> <br />
 
+      <%= f.label :priority, Task.human_attribute_name(:priority)%>
+      <%= f.select :priority, Task.priorities.keys.map { |x| [t(x, scope: %i[activerecord attributes task priorities]), x] } %> <br />
+
       <%= f.submit %>
 
