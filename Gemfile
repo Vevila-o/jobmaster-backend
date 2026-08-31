@@ -76,8 +76,11 @@ group :test do
 
   # Fixtures replacement with a straightforward definition syntax [https://github.com/thoughtbot/factory_bot]
   gem "factory_bot_rails"
+end
 
+group :development, :test do
   # Generate fake test data [https://github.com/faker-ruby/faker]
+  # db/seeds.rb 需要在 development 使用，所以不放在 :test group
   gem "faker"
 end
 
