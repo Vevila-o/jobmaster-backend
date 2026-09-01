@@ -163,7 +163,7 @@ RSpec.describe "Task", type: :system do
 
     context "when move to next page" do
       before do
-        find("a[aria-label='Next']").click
+        find("nav.pagy a[rel='next']:last-child").click
       end
 
       it { is_expected.to have_css("turbo-frame", count: total - per_page) }
@@ -173,10 +173,10 @@ RSpec.describe "Task", type: :system do
       let(:target) { 10 }
 
       before do
-        Array.new(target) { |i| create(:task, title: "target#{i}") }
-        fill_in Task.human_attribute_name(:title), with: "target"
+        create_list(:task, target, title: "test_target")
+        fill_in Task.human_attribute_name(:title), with: "test_target"
         click_button I18n.t("action.search")
-        find("a[aria-label='Next']").click
+        find("nav.pagy a[rel='next']:last-child").click
       end
 
       it { is_expected.to have_css("turbo-frame", count: target - per_page) }
