@@ -1,17 +1,13 @@
 
-    <div>
-
-      <turbo-frame id="<%=dom_id(task)%>" class="flex gap-4">
-
-        <div> <%=task.id%></div>
-        <div> <%=task.title%> </div>
-        <div> <%=task.content%> </div>
-        <div> <%=l(task.end_time, format: :long)%> </div>
-        <div> <%=t(task.status, scope: %i[activerecord attributes task statuses])%> </div>
-        <div> <%=t(task.priority, scope: %i[activerecord attributes task priorities])%> </div>
-        <div>
-          <%= link_to t("action.edit"), edit_task_path(task) %>
-          <%= link_to t("action.delete"), task_path(task), data: { turbo_method: :delete, turbo_frame: "_top", turbo_confirm: t("action.delete_confirm")} %>
-        </div>
-      </turbo-frame>
-    </div>
+<turbo-frame id="<%= dom_id(task) %>" class="flex gap-2 items-center border-b border-base-200 px-3 py-2 hover:bg-base-200/40">
+  <div class="<%= TaskListColumns::WIDTHS[:id] %>"><%= task.id %></div>
+  <div class="<%= TaskListColumns::WIDTHS[:title] %> font-medium truncate"><%= task.title %></div>
+  <div class="<%= TaskListColumns::WIDTHS[:content] %> truncate"><%= task.content %></div>
+  <div class="<%= TaskListColumns::WIDTHS[:end_time] %>"><%= l(task.end_time, format: :long) %></div>
+  <div class="<%= TaskListColumns::WIDTHS[:status] %>"><%= t(task.status, scope: %i[activerecord attributes task statuses]) %></div>
+  <div class="<%= TaskListColumns::WIDTHS[:priority] %>"><%= t(task.priority, scope: %i[activerecord attributes task priorities]) %></div>
+  <div class="<%= TaskListColumns::WIDTHS[nil] %>">
+    <%= link_to t("action.edit"), edit_task_path(task), class: "btn btn-ghost btn-sm text-base font-normal" %>
+    <%= link_to t("action.delete"), task_path(task), class: "btn btn-ghost btn-sm text-base font-normal text-error", data: { turbo_method: :delete, turbo_frame: "_top", turbo_confirm: t("action.delete_confirm") } %>
+  </div>
+</turbo-frame>
