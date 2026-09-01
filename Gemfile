@@ -76,8 +76,11 @@ group :test do
 
   # Fixtures replacement with a straightforward definition syntax [https://github.com/thoughtbot/factory_bot]
   gem "factory_bot_rails"
+end
 
+group :development, :test do
   # Generate fake test data [https://github.com/faker-ruby/faker]
+  # db/seeds.rb 需要在 development 使用，所以不放在 :test group
   gem "faker"
 end
 
@@ -87,4 +90,8 @@ gem "erb_lint", "~> 0.9.0"
 # i18n
 gem "rails-i18n"
 
+# tailwind css
 gem "tailwindcss-rails", "~> 4.6"
+
+# pagy
+gem "pagy", "~> 43.6"
