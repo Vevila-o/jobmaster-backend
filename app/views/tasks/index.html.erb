@@ -1,5 +1,7 @@
     <% content_for(:title) { t(".title") } %> 
 
+    <%= link_to t("navigation.new_task_path"), new_task_path, class: "btn btn-primary" %>
+
   <div style="margin: 10px 0px">
     <span> <%=t("action.created_at")%>：</span>
     <%=link_to t("action.created_asc"), tasks_path(column: "created_at", direction: "asc")%>
@@ -57,5 +59,3 @@
     <%== @pagy.series_nav %>
       <br>
 
-    <%= link_to t("navigation.new_task_path"), new_task_path %>
-    <%= link_to t("navigation.users_path"), "/users" %>
