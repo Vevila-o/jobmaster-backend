@@ -10,7 +10,7 @@
             </tr>
           </thead>
           <tbody>
-            <%= render "user", user: @user %>
+            <%= render partial: "user",locals: { user: @user } %>
           </tbody>
         </table>
       </div>
