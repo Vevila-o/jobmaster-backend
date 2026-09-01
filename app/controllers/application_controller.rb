@@ -5,4 +5,5 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+  rescue_from Pagy::RangeError, with: -> { redirect_to tasks_path(params.permit(:column, :direction, task_search_form: [ :title, :status ])) }
 end
