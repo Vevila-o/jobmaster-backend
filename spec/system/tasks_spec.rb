@@ -4,7 +4,7 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
-  let(:task) { Task.create(title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
+  let(:task) { FactoryBot.create(:task, title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
 
   context "when new" do
     before do
@@ -69,7 +69,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "sort" do
-    let(:older_task) { Task.create(title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
+    let(:older_task) { FactoryBot.create(:task, title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
 
     before do
       task
@@ -116,8 +116,8 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "priority sort" do
-    let(:medium_task)  { Task.create(title: "test2", created_at: 3.days.ago, end_time: 3.days.from_now, priority: "medium") }
-    let(:high_task) { Task.create(title: "test3",  created_at: 2.days.ago, end_time: 4.days.from_now, priority: "high") }
+    let(:medium_task)  { FactoryBot.create(:task, title: "test2", created_at: 3.days.ago, end_time: 3.days.from_now, priority: "medium") }
+  let(:high_task) { FactoryBot.create(:task, title: "test3",  created_at: 2.days.ago, end_time: 4.days.from_now, priority: "high") }
 
     before do
       task
@@ -242,7 +242,11 @@ RSpec.describe "Task", type: :system do
     subject(:create_task) { post tasks_path, params: params }
 
     context "with valid parameters" do
-      let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
+    let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
+
+    before do
+      create(:user)
+    end
 
       it { expect { create_task }.to change(Task, :count).by(1) }
 

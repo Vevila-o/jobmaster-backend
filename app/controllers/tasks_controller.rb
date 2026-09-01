@@ -23,7 +23,8 @@ class TasksController < ApplicationController
   # 新增
   def create
     @task = Task.new(task_params)
-
+    # 過渡用 先都寫入第一位使用者當fk
+    @task.user = User.first
     if @task.save
       redirect_to tasks_path, notice: t(".success")
     else
