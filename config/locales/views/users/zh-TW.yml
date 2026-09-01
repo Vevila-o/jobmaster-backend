@@ -14,4 +14,5 @@
       success: 編輯使用者成功
     destroy:
       success: 刪除使用者成功
+      user_blank: 尚有未完成的任務，無法刪除使用者
       

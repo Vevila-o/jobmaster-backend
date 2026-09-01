@@ -34,8 +34,11 @@ class UsersController < ApplicationController
   end
   # 刪除
   def destroy
-    @user&.destroy
-    redirect_to users_path, notice: t(".success")
+    if @user&.destroy
+      redirect_to users_path, notice: t(".success")
+    else
+      redirect_to users_path, alert: t(".user_blank")
+    end
   end
 
   private
@@ -47,7 +50,7 @@ class UsersController < ApplicationController
   end
 
   # 等登入機制做好後再補上
-  # def admin_user_pramas
+  # def admin_user_parmas
   #   params.require(:user).permit(:name, :email, :role)
   # end
 end
