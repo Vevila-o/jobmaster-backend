@@ -4,7 +4,7 @@
     <tbody>
       <tr>
         <td class="w-12"><%= task.id %></td>
-        <td class="w-32 font-medium truncate"><%= task.title %></td>
+        <td class="w-32 font-medium truncate task-title"><%= task.title %></td>
         <td class="truncate"><%= task.content %></td>
         <td class="w-44"><%= l(task.end_time, format: :long) %></td>
         <td class="w-16"><%= t(task.status, scope: %i[activerecord attributes task statuses]) %></td>

@@ -83,7 +83,7 @@ RSpec.describe "Task", type: :system do
       end
 
       it { is_expected.to have_current_path(tasks_path(column: "created_at", direction: "asc")) }
-      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ older_task.title, task.title ]) }
+      it { expect(all("turbo-frame td.task-title").map(&:text)).to eq([ older_task.title, task.title ]) }
     end
 
     context "when sorted by created_desc" do
@@ -92,7 +92,7 @@ RSpec.describe "Task", type: :system do
       end
 
       it { is_expected.to have_current_path(tasks_path(column: "created_at", direction: "desc")) }
-      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ task.title, older_task.title ]) }
+      it { expect(all("turbo-frame td.task-title").map(&:text)).to eq([ task.title, older_task.title ]) }
     end
 
     context "when sorted by end_time_asc" do
@@ -101,7 +101,7 @@ RSpec.describe "Task", type: :system do
       end
 
       it { is_expected.to have_current_path(tasks_path(column: "end_time", direction: "asc")) }
-      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ task.title, older_task.title ]) }
+      it { expect(all("turbo-frame td.task-title").map(&:text)).to eq([ task.title, older_task.title ]) }
     end
 
     context "when sorted by end_time_desc" do
@@ -111,7 +111,7 @@ RSpec.describe "Task", type: :system do
 
       it { is_expected.to have_current_path(tasks_path(column: "end_time", direction: "desc")) }
 
-      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ older_task.title, task.title ]) }
+      it { expect(all("turbo-frame td.task-title").map(&:text)).to eq([ older_task.title, task.title ]) }
     end
   end
 
@@ -133,7 +133,7 @@ RSpec.describe "Task", type: :system do
 
       it { is_expected.to have_current_path(tasks_path(column: "priority", direction: "asc")) }
 
-      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ high_task.title, medium_task.title, task.title ]) }
+      it { expect(all("turbo-frame td.task-title").map(&:text)).to eq([ high_task.title, medium_task.title, task.title ]) }
     end
 
     context "when sorted by priority_desc" do
@@ -144,7 +144,7 @@ RSpec.describe "Task", type: :system do
 
       it { is_expected.to have_current_path(tasks_path(column: "priority", direction: "desc")) }
 
-      it { expect(all("turbo-frame div:nth-of-type(2)").map(&:text)).to eq([ task.title, medium_task.title, high_task.title ]) }
+      it { expect(all("turbo-frame td.task-title").map(&:text)).to eq([ task.title, medium_task.title, high_task.title ]) }
     end
   end
 
