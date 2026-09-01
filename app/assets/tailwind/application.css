@@ -1,2 +1,53 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: false;
+}
+
+/* 自訂主題：docs/colors.jpeg 的五色配色 */
+@plugin "daisyui/theme" {
+  name: "jobmaster";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* 背景：主頁純白，卡片用淺青 #B8DADA */
+  --color-base-100: #ffffff;
+  --color-base-200: #b8dada;
+  --color-base-300: #8acfcf;
+  --color-base-content: #3d3838;
+
+  /* 主要動作：青綠 #8ACFCF（對比度 11.91，配深色字） */
+  --color-primary: #8acfcf;
+  --color-primary-content: #1f2b2b;
+
+  /* 次要動作：藍灰 #7EA1B8（對比度 7.68，配深色字） */
+  --color-secondary: #7ea1b8;
+  --color-secondary-content: #16202a;
+
+  /* 點綴：淺綠 #B3CCB3（對比度 12.2，配深色字） */
+  --color-accent: #b3ccb3;
+  --color-accent-content: #202b20;
+
+  /* 中性（導覽列等）：灰褐 #635C5C（對比度 6.53，配白字） */
+  --color-neutral: #635c5c;
+  --color-neutral-content: #ffffff;
+
+  /* 狀態色：沿用 daisyUI 預設，語意需要被一眼認出，不套配色 */
+  --color-info: oklch(74% 0.16 232.661);
+  --color-info-content: oklch(29% 0.066 243.157);
+  --color-success: oklch(76% 0.177 163.223);
+  --color-success-content: oklch(37% 0.077 168.94);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-error: oklch(71% 0.194 13.428);
+  --color-error-content: oklch(27% 0.105 12.094);
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
