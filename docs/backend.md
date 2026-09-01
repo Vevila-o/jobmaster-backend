@@ -1,7 +1,9 @@
-2025/11/17 更新
+2026/08/31 更新
 
 # 新進工程師訓練教材: 後端
 [使用說明](README.md)
+
+※ 開工前請先讀[AI 輔助學習與開發指引](ai-guide.md)，了解本教程中 coding agent 與 LLM 的使用界線。
 
 ## 概要
 
@@ -28,7 +30,7 @@
 	- 管理者具有權限新增、修改、刪除使用者
 	- 管理者具有權限查看所有使用者任務
 
-※ 不使用 AASM & acts_as_tag 相關 Gem
+※ 不使用 AASM & acts_as_tag 相關 Gem。認證功能不使用 Devise，也不使用 `has_secure_password`（詳見步驟22）
 
 ### 瀏覽器支援
 
@@ -38,9 +40,21 @@
 
 請以下列程式語言、網站開發框架及資料庫系統的最新穩定版本進行開發：
 
-- Ruby 3.3 或以上版本
-- Rails 7.1 或以上版本
-- PostgreSQL 15 或以上版本
+- Ruby 4.0 或以上版本
+- Rails 8.2 或以上版本
+- PostgreSQL（最新穩定版本）
+
+※ 關於「為什麼不用 SQLite」：Rails 8 起 SQLite 已經是官方認可的 production 選項，開發上也省事得多。本教材仍選 PostgreSQL，是因為步驟14 要求把作品實際部署上線，而目前免費（且不需綁信用卡）的 PaaS 幾乎都沒有持久化磁碟——容器一重啟，SQLite 的資料檔就跟著消失。因此改採「app 與資料庫分開託管、以 `DATABASE_URL` 注入連線設定」的組合，這也比較接近實務上的做法。
+
+（如果你手上有能掛 persistent volume 的環境，改用 SQLite 是完全合理的選擇，可以和導師討論）
+
+### 開發輔助工具
+
+- 使用 [Overmind](https://github.com/DarthSim/overmind) 取代 Rails 預設建議的 foreman，來執行 `Procfile.dev`（`bin/dev` 啟動開發環境時，需要同時跑 web server 和 tailwindcss watcher 等多個 process）
+
+### 背景工作
+
+- ActiveJob + [Solid Queue](https://github.com/rails/solid_queue)
 
 ### 前端相關工具
 
@@ -48,8 +62,12 @@
 
 - TailwindCSS v4
 - 推薦使用
-  - [TailwindCSS UI](https://tailwindcss.com/plus)
-  - [Flowbite](https://flowbite.com/)
+  - [daisyUI](https://daisyui.com/)：純 CSS 的元件庫，class 語意化、無額外 JS，步驟4 畫 mockup 時也是用它
+  - [Flowbite](https://flowbite.com/)：元件豐富，但它以 data-attribute 驅動的 JS 和 Hotwire/Stimulus 的職責會有些重疊，要想清楚誰負責什麼
+  - [Basecoat](https://basecoatui.com/)：純 HTML 版的 shadcn/ui 風格元件
+  - [Tailwind Plus](https://tailwindcss.com/plus)（原 TailwindCSS UI）：官方出品、品質最好，但**要付費**
+
+※ 關於 [shadcn/ui](https://ui.shadcn.com/)：它是 React 專用的，本專案是 ERB + Hotwire，沒辦法直接用。想要那個外觀請用上面的 Basecoat。Rails 圈的移植版（`shadcn-rails`、[rails-ui](https://github.com/michelson/rails-ui)）目前都停留在 Tailwind v3 時代且久未更新，可以參考它們的做法，但不建議直接當相依。
 
 #### JS
 
@@ -87,6 +105,22 @@
 
 - Git: [https://gitbook.tw/](https://gitbook.tw/)
 - Rails new with Typecraft: https://www.youtube.com/playlist?list=PLHFP2OPUpCeZcPutT9yn4-e0bMmrn5Gd1
+- 開發技巧集：[topics.md](topics.md)（Git、GitHub、Rails 開發環境相關技巧，請在研習過程中隨時參考）
+
+### 查詢技術資料的基本網站
+
+第一次使用的 method 或功能，請養成先查閱官方文件的習慣：
+
+- [Ruby 官方文件](https://docs.ruby-lang.org/en/)
+- [Ruby on Rails API](https://api.rubyonrails.org/)
+- [Ruby on Rails Guides](https://guides.rubyonrails.org/)
+
+### 免費的線上課程
+
+- ODIN Project [Full Stack Ruby on Rails](https://www.theodinproject.com/paths/full-stack-ruby-on-rails)
+  - React 不用
+- [Rails 8 Unpacked with Typecraft](https://www.youtube.com/playlist?list=PLHFP2OPUpCebdA4-xR07SPpoBWVERkHR6)
+- [GoRails Path](https://gorails.com/path)
 
 ## 必修課題
 
@@ -94,7 +128,7 @@
 
 #### 1-1: 安裝 Ruby
 
-- 利用 [rbenv](https://github.com/rbenv/rbenv) 或 [RVM](https://rvm.io) 安裝最新版本的 Ruby
+- 利用 [mise](https://mise.jdx.dev/) 安裝最新版本的 Ruby（`mise use -g ruby@latest`）
 - 以 `ruby -v` 指令來確認 Ruby 的版本
 
 #### 1-2: 安裝 Rails
@@ -108,6 +142,11 @@
 - 在你使用的 OS 下安裝 PostgreSQL
 	- macOS 的話，請以 `brew` 等工具安裝
 
+#### 1-4: 安裝 Overmind
+
+- 以 `brew install overmind` 安裝 [Overmind](https://github.com/DarthSim/overmind)
+	- 之後會用它來啟動開發環境（詳見步驟3）
+
 ### 步驟2: 在 GitHub 建立 repository
 
 - 在你的環境中安裝 Git
@@ -117,26 +156,75 @@
 - 建立 repo
 	- 如果沒有帳號的話，先申請帳號
 	- 接著建立空白的 repo
+- 使用 macOS 的人，為了避免把系統檔案誤 commit 進 Git，請加上全域的 ignore 設定
+	- 建立 `~/.config/git/ignore` 這個文字檔，寫入以下內容：
+	- ```
+	  .DS_Store
+	  ```
 
 ### 步驟3: 建立 Rails 專案
 
 - 以 `rails new` 指令，建立 Rails 應用程式最低限度的樣板和檔案
+	- 先以 `rails new --help` 確認有哪些選項，再選擇適合的選項建立專案
+	- TailwindCSS 為必要，資料庫使用 PostgreSQL
+	- 可以參考以下建議選項：
+		- 想多方嘗試各種功能的人：
+			- `--css=tailwind --database=postgresql --skip-action-mailbox`
+		- 只想專注在本教材課題的人：
+			- `--css=tailwind --database=postgresql --skip-action-mailer --skip-action-mailbox --skip-action-text --skip-active-storage --skip-action-cable --skip-jbuilder`
+		- ※ 請不要加 `--skip-active-job`，之後的課題會用到 ActiveJob + Solid Queue
+- 啟動開發環境確認專案能跑起來
+	- `rails new --css=tailwind` 會產生 `bin/dev` 和 `Procfile.dev`：開發期需要同時跑 web server 和 `tailwindcss --watch` 兩個 process
+	- `bin/dev` 預設會使用 foreman，本教材改用 overmind：**請修改 `bin/dev`，把呼叫 foreman 的部分改成 overmind**（`overmind start -f Procfile.dev`），之後一律以 `bin/dev` 啟動開發環境
+		- 順手把 `Gemfile` 裡的 foreman 拿掉（overmind 是用 brew 裝的，不需要 gem）
+		- 改完後打開 `bin/dev` 看一下，說明它到底做了哪些事
+	- 開啟 `http://localhost:3000/` 確認頁面正常顯示
 - 在 `rails new` 產生的專案目錄下，建立 `docs` 資料夾，並將本教程文件 commit 進去
 	- 目的是為了方便之後開發時可以參考
 - 將成品 push 到 GitHub 的 repo
 - 將使用的 Ruby 版號寫進 `Gemfile`（也請確認 Rails 版號是否有標明）
 
+#### 關於 Dependabot 的通知
+
+GitHub 會透過 `dependabot` 自動建立 gem 版本更新的 PR。研習期間這類 PR 只會造成干擾，**請直接[將其關閉](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates#disabling-dependabot-version-updates)**。
+
 ### 步驟4: 想像網站成品會是什麼樣子
 
-- 開始進行設計之前，先和導師一起討論對最終成品的預想。建議在紙上畫 prototype
-- 請參照網站需求，開始想需要怎樣的資料結構
-	- 需要哪些 model (或資料表)？
-	- 資料表會需要哪些欄位？
-- 有想法之後，將 model 的關係圖手繪出來（或其他繪圖軟體）
-	- 完成後將關係圖拍照存檔，放進 repo 裡
-	- 把 table schema 寫進 `README.md`（model 名稱、欄位名稱、資料形態）
+#### 4-1: 用 agent 拼出畫面草稿
 
-※ 在這個階段，model 關係圖不需要是完全正確的。以現在所能預想的範圍來規劃就好（做到後面的步驟，發現需要修改時再來調整的概念）
+- 先自己列出這個系統需要哪些畫面（任務列表、新增、編輯、登入、使用者管理…）
+	- 這一步是你的工作，不是 AI 的。畫面清單反映的是你對需求的理解
+- 選一套元件庫，做一個 `mockup.html`，把所有畫面上下疊在同一頁，用瀏覽器打開就能看
+	- 用 CDN 載入即可，這個階段不需要任何 build 流程
+	- **推薦 daisyUI**：一組 CDN 就同時給你 Tailwind v4 和元件，而且是 `btn btn-primary` 這種語意化的 class，agent 生得準，之後搬進 ERB 也幾乎原封不動
+
+	```html
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+	<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+	```
+
+	- 想要 [shadcn/ui](https://ui.shadcn.com) 那種外觀的話，可以改用 [Basecoat](https://basecoatui.com)（純 HTML 的 shadcn 重寫版，Tailwind 要另外載，且 Basecoat 的 CSS 要放在 Tailwind 之後）
+	- ※ shadcn/ui **本體是 React 專用，也沒有 CDN**，這個專案用不到，不要白花時間。Rails 的 ERB 移植版 `shadcn-rails` 則停在 Tailwind v3 時代且久未更新，同樣不建議
+- **用 agent 生第一版，然後自己動手調**
+	- 把畫面清單和需求丟給 Claude Code 之類的 agent，請它產出 `mockup.html`
+	- 接著開始迭代：agent 改 → 瀏覽器重整看 → 指出哪裡不對 → 再改。不要期待一次就生對
+	- 版面怎麼排、欄位什麼順序、列表上該出現哪些資訊——**這些都是你的決定**，agent 只是幫你把它畫出來的手
+	- 【選項】想要能視覺化點選微調、或方便分享給導師的稿，可以用 Claude Code 的 `/design` canvas、[Pencil](https://pencil.dev) 這類由 agent 驅動的設計工具；傳統的 [draw.io](https://drawio-app.com/)、[Figma](https://www.figma.com/) 當然也可以
+- ※ 這階段的產出是**討論用的草稿**，不求好看。步驟20 才是真的套設計，不要在這裡就開始糾結 UI 細節
+- 和導師一起看這份草稿，順便討論這個網站會以什麼形式被使用（公開在網路上？公司內部使用？）
+- 把 `mockup.html` 放進 `docs/` 一起 commit
+
+#### 4-2: 從畫面反推資料結構，畫 ER 圖
+
+- 對著 4-1 的每個畫面逐一自問：這個欄位要存在哪張表？這個列表要 join 到什麼？這個下拉選單的選項從哪來？
+- 請參照網站需求，開始想需要怎樣的資料結構
+	- 需要哪些資料表？資料表名稱、欄位名稱、資料型態、限制（constraints）等，把建立 schema 所需的資訊都想過一遍
+- 有想法之後，將資料結構以 **ER 圖**呈現
+	- 請使用 [Mermaid 的 `erDiagram`](https://mermaid.js.org/syntax/entityRelationshipDiagram.html) 撰寫，直接寫在 `README.md` 中（GitHub 會自動渲染成圖）
+	- 完成後在 GitHub 上發 PR 並請導師 review
+- ※ **不要讓 AI 幫你決定 schema。** 畫面可以放心請 agent 生，資料結構要自己想——那是步驟6 要跟導師討論的重點
+
+※ 在這個階段，ER 圖不需要是完全正確的。以現在所能預想的範圍來規劃就好（做到後面的步驟，發現需要修改時再來調整的概念）
 
 ### 步驟5: 資料庫連接等週邊設定
 
@@ -147,9 +235,10 @@
 - 設定 `database.yml`
 - 以 `rails db:create` 建立資料庫
 - 以 `rails db` 確認有正確連接資料庫
+- 在 `README.md` 記錄包含 DB 設定在內的環境建置步驟
 - 在 GitHub 上建立 PR 並請人 review
-	- 必要時，請在 PR 上標柱 WIP（Work In Progress）
-	- 收到 Comment 後就做必要的處置。收到兩個 LGTM（Looks Good To Me） 後就可以 merge 回 master
+	- 必要時，請在 PR 上使用 Draft PR（或標註 WIP），詳見[開發技巧集](topics.md)
+	- 收到 Comment 後就做必要的處置。收到兩個 LGTM（Looks Good To Me） 後就可以 merge 回 main
 
 ### 步驟6: 建立任務 model
 
@@ -158,6 +247,7 @@
 - 以 `rails generate` 指令建立 CRUD 所需的 model 類別
 - 撰寫 migration 並以此建立資料表
 	- 非常重要：migration 要確定能安全回到上一步的狀態！請養成以 `redo` 確認的習慣
+	- 別忘了設定 DB 層級的限制（constraints）
 - 以 `rails c` 指令，透過 model 確認有正確連接資料庫
 	- 順便試著以 ActiveRecord 方式建立任務，確認能順利建立
 - 在 GitHub 上發 PR 並請人 review
@@ -170,39 +260,73 @@
 	- 實做 controller 和 view 必要的部分
 	- 完成新增、修改、刪除動作之後，需要在畫面上顯示 Flash 訊息
 - 修改 `routes.rb`，讓 `http://localhost:3000/` 會顯示任務的列表頁面
+- 存取列表頁面時，觀察瀏覽器和伺服器之間的 HTTP 往返（request / response），試著向導師說明
+- 完成本步驟後，試著向導師說明你所寫的程式碼
+	- 各個 class、method、變數的用途
+	- 處理的流程（從 request 進來到畫面 render 出去）
 - 在 GitHub 上發 PR 並請人 review
 
 ※ 之後的 PR，如果覺得過於龐大（超過15個檔案變動），就需要開始考慮分割成多個 PR
 
-### 步驟8: 寫 E2E 測試
+#### 關於 Rails 7 以後的刪除功能
 
-- 寫 spec 的事前準備
-	- 安裝 gem 'rspec-rails'
-	- 準備 `spec/spec_helper.rb` 、`spec/rails_helper.rb`
-- 針對任務的功能來寫 feature spec
-- 用Factory-Bot 與 faker 建立資料
+Rails 7 起預設載入 Hotwire（Turbo）。以前負責處理 `link_to ..., method: :delete` 和確認對話框的 `rails-ujs` 已經不在了，畫面上的連結與表單改由 Turbo 攔截、用 `fetch` 送出。因此刪除功能有幾個和以往不同的寫法：
 
-※ 參照 [Better Specs](https://www.betterspecs.org/) ， 將測試寫得更簡潔
-- 導入 GitHub Action CI 之類的 CI 工具，每次 Push 後自動跑 Spec
+1. **不能再用 `link_to ..., method: :delete`**，那是 rails-ujs 的功能，現在完全無效（會變成一個普通的 GET 連結）。請改用 `button_to`
+2. **刪除後 redirect 要加 `status: :see_other`（303）**
+	- 為什麼？`fetch` 跟隨 redirect 時，302 會沿用原本的 HTTP method——於是變成用 DELETE 去打你要轉向的那個頁面。只有 303 會明確要求「改用 GET 重新請求」
+3. **確認對話框改寫成 `data: { turbo_confirm: "確定要刪除嗎？" }`**
+
+這件事也會影響你怎麼寫測試：
+
+- **request test**（`test/controllers/`）不會跑 JavaScript，所以驗不到 `turbo_confirm`，但驗得到上面第 2 點。刪除的 request test 除了 `assert_redirected_to`，還要 `assert_response :see_other`——如果你忘了加 `status: :see_other`，這一行就會失敗
+- **system test**（`test/system/`）才是實際跑瀏覽器、會觸發 Turbo 的地方。確認對話框要用 Capybara 的 `accept_confirm { click_button "刪除" }` 包起來，不然點下去之後對話框會擋著，後續的 `assert_text` 全都會失敗
+
+※ 這是「同一個功能要在兩層測試各驗一件事」的典型例子：request test 驗 HTTP 行為（status、redirect 目標、資料真的被刪掉），system test 驗使用者實際操作的流程。
+
+### 步驟8: 實際操作 SQL
+
+- 直接操作資料庫
+	- 以 `rails db` 指令連接資料庫
+	- 以 SQL 對任務進行查詢、新增、修改、刪除
+- 存取任務列表頁面，確認 log 中出現的 SQL
+	- 試著向導師說明執行了哪些 SQL
+- 確認 ActiveRecord 的 method 會產生什麼 SQL
+	- 在 `rails c` 中執行 `find`、`where` 等 method，觀察產生的 SQL
+- 試著向導師說明什麼是「SQL injection」，以及「在 Rails 中如何避免 SQL injection」
+
+### 步驟9: 寫 E2E 測試
+
+測試框架使用 Rails 內建的 [Minitest](https://guides.rubyonrails.org/testing.html)，不另外安裝 RSpec。
+
+- 認識 `rails new` 產生的 `test/` 目錄結構（`test_helper.rb`、`application_system_test_case.rb` 等）
+- 針對任務的功能撰寫 system test（`rails generate system_test tasks`，以 `rails test:system` 執行）
+- 使用 [factory_bot_rails](https://github.com/thoughtbot/factory_bot_rails) 與 [Faker](https://github.com/faker-ruby/faker) 建立測試資料（Minitest 也能搭配 Factory Bot 使用）
+	- Rails 內建的 fixtures 機制也請認識一下，理解兩者的差異
+- 導入 GitHub Actions 之類的 CI 工具，每次 Push 後自動跑測試
+	- 可參考 el-training 提供的 [workflow 設定範例](https://github.com/everyleaf/el-training/tree/master/github_actions/.github/workflows)
 	- 太難的話可以請導師幫忙設定
 - 安裝 rubocop 以統一程式風格
+	- 可參考 el-training 提供的 [RuboCop 設定範例](https://github.com/everyleaf/el-training/tree/master/rubocop)
+	- 建議也在 CI 上執行 rubocop
 
-### 步驟9: 將網站中的中文部分共用化
+### 步驟10: 將網站中的中文部分共用化
 
 - 利用 Rails 的 i18n 功能，將 View / Controller / Model 中的語言部份共用化
+	- [rails-i18n 提供的 locale 檔](https://github.com/svenfuchs/rails-i18n/tree/master/rails/locale)和自己專案的 model locale 檔請分開管理
 
 ※ i18n 化的好處是，之後的步驟中，各種訊息的處理會輕鬆很多
 
-### 步驟10: 設定 Rails 的時區
+### 步驟11: 設定 Rails 的時區
 
 - 將 Rails 的時區設為台灣（台北）
 
-### 步驟11: 任務列表以建立時間排序
+### 步驟12: 任務列表以建立時間排序
 
 - 資料預設是以 id 進行排序，請試著讓它以建立時間排序
-- 完成後，撰寫此功能 feature spec
+- 完成後，撰寫此功能 system test
 
-### 步驟12: 資料驗證
+### 步驟13: 資料驗證
 
 - 開始設定資料驗證
 	- 請思考需要在哪個欄位上加入哪種驗證比較好
@@ -212,12 +336,21 @@
 - 撰寫對應的 model 測試
 - 在 GitHub 上發 PR 並請人 review
 
-### 步驟13: 網站佈署
+### 步驟14: 網站佈署
 
-目的：將 master 分支上的簡易任務管理系統推上線
+目的：將 main 分支上的簡易任務管理系統推上線
 
 - 試著將網站 deploy 到 [Render](https://render.com/) 上
-	- 沒有帳號的話，請建立帳號
+	- 沒有帳號的話，請建立帳號（用公司或個人的 email 都可以）
+	- 佈署方式可參考官方文件 [Deploy a Rails App](https://render.com/docs/deploy-rails)，免費方案請使用 Deploy Manually 的方式
+	- 資料庫請使用 [Neon](https://neon.tech/) 或 [Supabase](https://supabase.com/) 的免費 PostgreSQL（Render 免費方案的 PostgreSQL 只能使用 30 天，不建議使用）
+		- 在 Render 上以 `DATABASE_URL` 環境變數設定連線字串
+		- 藉此理解 app 和資料庫分開託管、以環境變數注入設定的實務做法
+- 【選項】想順便學 Docker 的人，可以改部署到 [Hugging Face Spaces](https://huggingface.co/spaces)（Docker Space ）*2026/8更新：需付費才可以使用
+Docker Space* 
+	- 直接使用 `rails new` 產生的 `Dockerfile`，但 HF 要求 app 聽 port 7860
+	- 部署方式是把程式碼 push 到 HF 提供的 git remote
+	- 免費方案 48 小時沒有流量會休眠，喚醒時有冷啟動延遲
 - 看一下被推上 Render 的網站
   - 接下來就會在這裡建立任務並繼續開發
   - ※ 不過，推上 Render 後，就是在網路上公開了，請注意不要放敏感資料
@@ -226,44 +359,106 @@
 - 將佈署的方法和網站操作寫進 `README.md`
 	- 也將使用的 framework 版號等資料記下來
 
-### 步驟14: 加入結束時間，並以時間排序
+### 步驟15: 用 Turbo Frames 實做行內編輯（inline editing）
+
+- 在任務列表頁為每筆任務加上編輯按鈕，按下後該列變成可編輯狀態，按下更新後直接在列表上反映結果
+- 步驟7 做的編輯功能（action、頁面）維持原樣，另外使用 [Turbo Frames](https://turbo.hotwired.dev/handbook/frames) 實做行內編輯與更新
+- 最後，把重複的 view 盡可能整理成 partial
+- 注意：Turbo Frames 無法用來更新 `<table>` 的一部分（如 `<tr>` 以下）。因為 `<turbo-frame>` 標籤夾在 `<table>` 和 `<tr>` 之間會讓瀏覽器無法正確解析表格。如果你的列表原本是用 `<table>` 排的，可能需要重新調整標籤結構
+- 提示：在此之前你可能已經把新增頁和編輯頁的表單共用化了，但這次加入的行內編輯不必預設一定要共用。先想「新功能需要什麼」寫寫看，寫完後如果發現可以共用再來整理
+
+### 步驟16: 加入結束時間，並以時間排序
 
 - 任務可設定結束時間
 - 列表頁可以結束時間排序
-- 擴充 spec
+- 擴充測試
 - PR/review 後佈署
 
-### 步驟15: 加入狀態，並且能夠查詢
+### 步驟17: 加入狀態，並且能夠查詢
+
+※ 本教材為了練習，不使用 Ransack 等查詢用 gem。請自己用 ActiveRecord 的 scope，拼出一組類似 Ransack 的查詢介面。第一次寫 scope 的人，請參考本步驟最後的「[給第一次寫 scope 的人](#給第一次寫-scope-的人)」
 
 - 在任務上加入狀態（待處理、進行中、完成）
-	- 【選項】不是初學者的話，可以使用管理 state 的 gem
+	- 使用 ActiveRecord 的 [enum](https://api.rubyonrails.org/classes/ActiveRecord/Enum.html) 來表現與管理狀態
 - 在列表頁面，要能夠以標題和狀態進行查詢
-	- 【選項】不是初學者的話，可以使用 ransack 等 gem
+
+#### 17-1: 先用最直覺的寫法做一次
+
+- 在 controller 的 action 裡，用一連串 `if params[:title].present?` 去串 `where`
+- 這樣寫可以動，但 action 會愈來愈肥、條件愈加愈難管理。**請先親身體會這個痛點**，再進到下一步
+
+#### 17-2: 抽成 scope，並訂出命名慣例
+
+把每個查詢條件抽成一個 model 的 scope，命名採 `欄位_predicate` 的形式（這正是 Ransack 的命名慣例）。必修的 scope：
+
+| scope | 意義 | 重點 |
+| --- | --- | --- |
+| `title_eq` | 標題完全相等 | 最單純的起點 |
+| `title_cont` | 標題包含（LIKE） | 一定要用 `sanitize_sql_like` 處理 `%`、`_` |
+| `status_eq` | 狀態相等 | 搭配 enum，字串和 symbol 都要能吃 |
+| `status_in` | 狀態多選 | 參數是陣列 |
+| `created_at_gteq` / `created_at_lteq` | 建立時間區間 | 為之後的時間條件鋪路 |
+
+兩個原則：
+
+- 每個 scope 只負責一件事，而且回傳的是 relation，所以可以任意串接：`Task.title_cont("報告").status_eq(:pending)`
+- 傳進來的值是 blank 時，scope 要回 `all`（而不是回空集合或炸掉）。這樣呼叫端才不需要再寫一堆 `if`
+
+#### 17-3: 把 params 分派到 scope
+
+寫一個像 `Task.search(params)` 的入口，把 `{ title_cont: "報告", status_eq: "pending" }` 這樣的 hash 逐一分派到對應的 scope。
+
+- **資安重點：絕對不可以直接 `public_send(key, value)`。** 那等於讓使用者從網址呼叫 model 上的任意 method（例如 `delete_all`）。請用白名單（例如一個 `SEARCH_SCOPES` 常數）過濾 key，過濾不掉的就忽略
+- 完成後，試著向導師說明你的白名單機制擋掉了什麼
+- 【選項】用一張 `{ 欄位 => [predicates] }` 的表配上 `define_method` 批次產生這些 scope，體會 Ransack 內部大概是怎麼做的
+
+#### 17-4: SQL、index 與測試
+
 - 在設定條件查詢時，請觀察 log 並確認 SQL 的變化
 	- 之後的步驟也需要這麼做，請養成習慣
 - 建立 search index
-	- 使用 [Factory Bot](https://github.com/thoughtbot/factory_bot_rails) 和 [Faker](https://github.com/faker-ruby/faker) 準備多筆資料 
+	- 使用 [Factory Bot](https://github.com/thoughtbot/factory_bot_rails) 和 [Faker](https://github.com/faker-ruby/faker) 準備多筆資料
 	- 準備一定程度的測試資料後，觀察 log/development.log 以確認加入 index 後對速度的改善
+	- 補充：index 貼在常出現於查詢條件（WHERE）、關聯（JOIN）、排序（ORDER BY）的欄位上，可以大幅改善查詢速度；但不適合貼在更新頻繁、或值的種類很少（低選擇性）的欄位上。本教材中「結束時間」是比較適合練習貼 index 的欄位
 	- 【選項】使用 PostgreSQL 的 explain 等功能，檢視資料庫端的 index 使用狀況
-- 針對查詢功能增加 model spec（feature spec 也要擴充）
+- 針對查詢功能增加 model test（system test 也要擴充）
+	- scope 很好測：每個 scope 各自一個 test，再加上串接與 blank 值的 case
+- 【選項】把查詢條件和排序條件的所有組合整理成表格
+	- 目的是掌握應用程式中較複雜的行為
 
-### 步驟16: 設定優先順序，並以優先順序排序
+#### 給第一次寫 scope 的人
 
-- 在任務上加入優先順序（高、中、低）
+scope 就是「幫一段 `where` 取個名字」。它之所以好用，關鍵在於**回傳的是 relation 而不是陣列**，所以可以一個接一個串下去，最後只發一次 SQL。
+
+會踩到的三個坑：
+
+1. **blank 值**：使用者沒填標題時，`title_cont(nil)` 不該回空集合。讓它回 `all`，串接才會順
+2. **LIKE 的跳脫**：使用者輸入 `100%` 時，`%` 在 SQL 的 LIKE 裡是萬用字元。請用 `sanitize_sql_like` 處理（這和步驟8 談的 SQL injection 是同一類問題，但不完全一樣，值得想清楚差別）
+3. **params 是使用者控制的**：拿 params 的 key 當 method 名稱來呼叫，是很常見的漏洞。白名單是唯一安全的做法
+
+### 步驟18: 設定優先順序，並以優先順序排序
+
+- 在任務上加入優先順序（高、中、低），一樣使用 enum
+- 沿用步驟17 的命名慣例，加上 `priority_eq`、`priority_in` 兩個 scope，並加進查詢的白名單
+	- 這一步同時在驗收步驟17 的設計：如果 scope 體系設計得好，新增一個查詢欄位應該只要加 scope 和白名單的一個 key，controller 和 view 幾乎不用動
+	- 如果你發現得改一堆地方，回頭想想步驟17 可以怎麼調整。這種「加新功能時才發現原設計不好」的經驗很值得跟導師討論
 - 列表頁可依優先順序做排序
-- 擴充 feature spec
+	- 排序也比照查詢做成 scope（例如 `sorted_by("priority desc")`），一樣要**白名單**
+	- ※ 排序條件會直接進 SQL 的 `ORDER BY`，把 params 原封不動塞進去是典型的 SQL injection（`where` 有 placeholder 保護，`order` 沒有）。請確認你的做法擋得住
+	- 順便把步驟12（建立時間）和步驟16（結束時間）的排序，一併收進同一個機制
+- 擴充 system test
 - PR/review 後佈署
 
-### 步驟17: 增加分頁功能
+### 步驟19: 增加分頁功能
 
 - 使用 [Pagy gem](https://rubygems.org/gems/pagy) 在列表頁面加入分頁功能
 
-### 步驟18: 加入設計
+### 步驟20: 加入設計
 
 - 使用 TailwindCSS，為目前的作品套入設計
 	- 【選項】自己寫 CSS 來設計
 
-### 步驟19: 支援多人使用
+### 步驟21: 支援多人使用
 
 - 建立使用者 model
 - 以 seed 建立第一個使用者
@@ -274,18 +469,21 @@
 	- ※ 推上 Render 時，已經建立過的任務，要和使用者建立關係（資料維護）
 - 試著以 `rails console` 方式建立使用者，並確認使用者與任務關聯，順利建立任務
 
-### 步驟20: 註冊/登入/登出功能
+### 步驟22: 註冊/登入/登出功能
 
-- 這裡不使用任何 Gem，請自己實做
+- 這裡不使用任何 Gem 提供的認證功能，請自己實做
 	- 不使用 devise 等便利的 Gem，是為了讓新人能更深入了解 Rails 中 HTTP cookie 和 session 的原理
-	- 以及加強對一般認證機制的理解（例如密碼的處理）
+	- **也不使用 Rails 內建的 `has_secure_password`**。請直接使用 [bcrypt gem](https://github.com/bcrypt-ruby/bcrypt-ruby) 提供的 `BCrypt::Password`，自己實做密碼的雜湊儲存與驗證（相當於自己刻出一個簡化版的 `has_secure_password`）
+		- 藉此理解：為什麼密碼不能存明文？為什麼要用 bcrypt 這類專門的雜湊演算法而不是 MD5/SHA-256？什麼是 salt？
+		- ※ 注意：是「不用現成的封裝」，不是「自己發明雜湊演算法」。雜湊本身請交給 bcrypt
+	- 完成後，試著向導師說明你的認證流程：密碼如何被雜湊與驗證、session 如何建立與銷毀
 - 實做註冊的功能與頁面
 - 實做登入的功能與頁面
 - 未登入時，不能進入任務管理頁面
 - 請改成只能看到自己建立的任務
 - 實做登出功能
 
-### 步驟21: 使用者管理頁面
+### 步驟23: 使用者管理頁面
 
 - 在頁面上新增管理選單
 - 管理頁面的網址 `/admin`
@@ -295,7 +493,7 @@
 - 在使用者列表頁面，顯示使用者的任務數量
 - 能夠看到每位使用者所建立的任務列表
 
-### 步驟22: 為使用者加入角色
+### 步驟24: 為使用者加入角色
 
 - 將使用者分為管理員和一般使用者
 - 請改成只有管理員可以存取使用者管理頁面
@@ -305,12 +503,12 @@
 	- 利用 model 的 callback 實做
 - ※ 可以自己決定是否要使用 Gem
 
-### 步驟23: 為任務加入標籤
+### 步驟25: 為任務加入標籤
 
 - 一個任務可以設定多個的標籤
 - 能夠以標籤進行搜尋
 
-### 步驟24: 設定錯誤頁面
+### 步驟26: 設定錯誤頁面
 
 - 客制化 Rails 的預設錯誤頁面
 - 根據不同狀況，設定適合的錯誤頁面
@@ -393,13 +591,8 @@
 ### 選修課題9: 任務到期通知信
 
 - 任務接近結束時間時，在背景以 email 進行通知
+	- 背景寄信請以 ActiveMailer::Base#deliver_later
 - 使用雲端服務來發信
-	- Render 的話就是 SendGrid
-	- VPS 的話就是 MailGun 或是公司的 Postal
+	- 例如 SendGrid、MailGun
 - 以一天一次的頻率，批次發信
-	- Render 的話用 Render Scheduler（add-on）
-	- VPS 的話就設定 cron job
-
-### 選修課題10: 用 Let's Encrypt 在 VPS 上加上 SSL 憑證
-
-- 用 Certbot 申請 letsencrypt 憑證並設定在 Nginx 上
+	- 請使用 Solid Queue 的 [recurring tasks](https://github.com/rails/solid_queue#recurring-tasks) 設定排程，不使用 Render Scheduler 或 cron
