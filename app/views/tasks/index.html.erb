@@ -40,19 +40,26 @@
 
       <%= f.submit t("action.search"), class: "btn btn-secondary" %>
     </div>
+
       <div class="overflow-x-auto">
         <div class="min-w-3xl">
-          <div class="flex gap-2 bg-base-200 rounded-lg px-3 py-2 font-semibold">
-            <% TaskListColumns::WIDTHS.each do |attribute, width| %>
-              <div class="<%= width %>"><%= Task.human_attribute_name(attribute) if attribute %></div>
-            <% end %>
-          </div>
+          <table class="table table-fixed w-full bg-base-200 rounded-lg">
+            <thead>
+              <tr>
+                <th class="w-12"><%= Task.human_attribute_name(:id) %></th>
+                <th class="w-32"><%= Task.human_attribute_name(:title) %></th>
+                <th><%= Task.human_attribute_name(:content) %></th>
+                <th class="w-44"><%= Task.human_attribute_name(:end_time) %></th>
+                <th class="w-16"><%= Task.human_attribute_name(:status) %></th>
+                <th class="w-16"><%= Task.human_attribute_name(:priority) %></th>
+                <th class="w-40"></th>
+              </tr>
+            </thead>
+          </table>
 
-          <div>
-            <% @tasks.each do |task| %>
-              <%= render "task", task: task %>
-            <% end %>
-          </div>
+          <% @tasks.each do |task| %>
+            <%= render "task", task: task %>
+          <% end %>
         </div>
       </div>
 

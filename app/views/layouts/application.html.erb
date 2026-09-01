@@ -28,7 +28,7 @@
 
   <body class="min-h-screen bg-base-100 flex flex-col">
 
-    <%# 導覽列 %>
+    <!--導覽列-->
     <header class="navbar bg-neutral text-neutral-content">
       <div class="mx-auto w-full max-w-5xl px-4 flex items-center gap-2">
         <%= link_to t("navigation.tasks_path"), tasks_path, class: "btn btn-ghost text-neutral-content text-lg font-semibold" %>
@@ -37,7 +37,7 @@
     </header>
 
     <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
-      <%# CRUD 訊息 %>
+      <!-- CRUD 訊息 -->
       <% flash.each do |type, msg| %>
         <div class="alert <%= type.to_s == "alert" ? "alert-error" : "alert-success" %> mb-4">
           <span><%= msg %></span>
