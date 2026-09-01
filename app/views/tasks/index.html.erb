@@ -1,55 +1,65 @@
     <% content_for(:title) { t(".title") } %> 
 
-  <div style="margin: 10px 0px">
-    <span> <%=t("action.created_at")%>：</span>
-    <%=link_to t("action.created_asc"), tasks_path(column: "created_at", direction: "asc")%>
-    <%=link_to t("action.created_desc"), tasks_path(column: "created_at", direction: "desc")%>
+    <%= link_to t("navigation.new_task_path"), new_task_path, class: "btn btn-primary" %>
 
-    <span><%=t("action.end_time")%>：</span>
-    <%=link_to t("action.end_asc"), tasks_path(column: "end_time", direction: "asc")%>
-    <%=link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc")%>
+  <div class="flex flex-wrap items-center gap-x-2 gap-y-1 my-4 text-lg">
+    <span class="font-medium"><%= t("action.created_at") %>：</span>
+    <%= link_to t("action.created_asc"), tasks_path(column: "created_at", direction: "asc"), class: "btn btn-ghost btn-sm text-lg font-normal" %>
+    <%= link_to t("action.created_desc"), tasks_path(column: "created_at", direction: "desc"), class: "btn btn-ghost btn-sm text-lg font-normal" %>
 
-    <span><%=t("action.priority")%>：</span>
-    <%=link_to t("action.priority_asc"), tasks_path(column: "priority", direction: "asc")%>
-    <%=link_to t("action.priority_desc"), tasks_path(column: "priority", direction: "desc")%>
+    <span class="font-medium ml-2"><%= t("action.end_time") %>：</span>
+    <%= link_to t("action.end_asc"), tasks_path(column: "end_time", direction: "asc"), class: "btn btn-ghost btn-sm text-lg font-normal" %>
+    <%= link_to t("action.end_desc"), tasks_path(column: "end_time", direction: "desc"), class: "btn btn-ghost btn-sm text-lg font-normal" %>
+
+    <span class="font-medium ml-2"><%= t("action.priority") %>：</span>
+    <%= link_to t("action.priority_asc"), tasks_path(column: "priority", direction: "asc"), class: "btn btn-ghost btn-sm text-lg font-normal" %>
+    <%= link_to t("action.priority_desc"), tasks_path(column: "priority", direction: "desc"), class: "btn btn-ghost btn-sm text-lg font-normal" %>
   </div>
-
-    
 
     <%=form_with model: @search_form, url: tasks_path, method: :get do |f|%>
     <% if @search_form.errors.any? %>
-      <div class="error-msg">
-        <% @search_form.errors.full_messages.each do |msg| %>
-          <p><%= msg %></p>
-        <% end %>
+      <div class="alert alert-error mb-4">
+        <ul class="list-disc list-inside">
+          <% @search_form.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
       </div>
     <% end %>
-    
-    <div style="margin: 10px 0px">
-      <%= f.label :title, Task.human_attribute_name(:title) %>
-      <%= f.text_field :title %> 
-      <%= f.label :status, Task.human_attribute_name(:status)%>
-    
-      <%= f.select :status, Task.statuses.keys.map { |x| [t(x, scope: %i[activerecord attributes task statuses]), x] }, include_blank: true%>
 
-      <%= f.submit t("action.search") %>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <div class="flex items-center gap-2">
+        <%= f.label :title, Task.human_attribute_name(:title), class: "whitespace-nowrap" %>
+        <%= f.text_field :title, class: "input" %>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <%= f.label :status, Task.human_attribute_name(:status), class: "whitespace-nowrap" %>
+        <%= f.select :status, Task.statuses.keys.map { |x| [ t(x, scope: %i[activerecord attributes task statuses]), x ] }, { include_blank: true }, { class: "select" } %>
+      </div>
+
+      <%= f.submit t("action.search"), class: "btn btn-secondary" %>
     </div>
-    <hr>
 
-      <div>
-        <div class= "flex gap-4" style="margin: 12px 0px">
-          <div><%=Task.human_attribute_name(:id) %></div>
-          <div><%=Task.human_attribute_name(:title) %></div>
-          <div><%=Task.human_attribute_name(:content)%> </div>
-          <div><%=Task.human_attribute_name(:end_time)%></div>
-          <div><%=Task.human_attribute_name(:status)%></div>
-          <div><%=Task.human_attribute_name(:priority)%></div>
-        </div>
-        <div>
+      <div class="overflow-x-auto">
+        <div class="min-w-3xl">
+          <table class="table table-fixed w-full bg-base-200 rounded-lg">
+            <thead>
+              <tr>
+                <th class="w-12"><%= Task.human_attribute_name(:id) %></th>
+                <th class="w-32"><%= Task.human_attribute_name(:title) %></th>
+                <th><%= Task.human_attribute_name(:content) %></th>
+                <th class="w-44"><%= Task.human_attribute_name(:end_time) %></th>
+                <th class="w-16"><%= Task.human_attribute_name(:status) %></th>
+                <th class="w-16"><%= Task.human_attribute_name(:priority) %></th>
+                <th class="w-40"></th>
+              </tr>
+            </thead>
+          </table>
 
           <% @tasks.each do |task| %>
-            <%=render "task", task: task %>
-          <% end %> 
+            <%= render "task", task: task %>
+          <% end %>
         </div>
       </div>
 
@@ -57,5 +67,3 @@
     <%== @pagy.series_nav %>
       <br>
 
-    <%= link_to t("navigation.new_task_path"), new_task_path %>
-    <%= link_to t("navigation.users_path"), "/users" %>

@@ -4,6 +4,9 @@
 # belong in git's global ignore instead:
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 
+# Ignore macOS folder metadata.
+.DS_Store
+
 # Ignore bundler config.
 /.bundle
 
@@ -45,3 +48,6 @@ ai-guide.md
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Ignore npm packages (restorable via `npm install` from package-lock.json).
+/node_modules

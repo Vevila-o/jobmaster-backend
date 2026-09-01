@@ -2,4 +2,4 @@
   <% content_for(:title) {t ".title" } %>
   <%= render 'userlist' %>
   <br>
-  <%= link_to t("action.edit"), edit_user_path(@user) %>
+  <%= link_to t("action.edit"), edit_user_path(@user), class: "btn btn-primary" %>

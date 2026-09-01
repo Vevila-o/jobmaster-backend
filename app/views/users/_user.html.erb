@@ -1,13 +1,13 @@
 
-  <tr>
-    <td> <%= user.id %> </td>
-    <td> <%= user.name %> </td>
-    <td> <%= user.email %> </td>
-    <td> <%= user.role %> </td>
+  <tr class="hover:bg-base-200/40">
+    <td><%= user.id %></td>
+    <td class="font-medium"><%= user.name %></td>
+    <td><%= user.email %></td>
+    <td><%= user.role %></td>
     <% if local_assigns[:actions] %>
-      <td>
-        <%= link_to t("action.edit"), edit_user_path(user) %>
-        <%= link_to t("action.delete"), user_path(user), data: { turbo_method: :delete, turbo_confirm: t("action.delete_confirm") } %>
+      <td class="whitespace-nowrap">
+        <%= link_to t("action.edit"), edit_user_path(user), class: "btn btn-ghost btn-sm text-base font-normal" %>
+        <%= link_to t("action.delete"), user_path(user), class: "btn btn-ghost btn-sm text-base font-normal text-error", data: { turbo_method: :delete, turbo_confirm: t("action.delete_confirm") } %>
       </td>
     <% end %>
   </tr>

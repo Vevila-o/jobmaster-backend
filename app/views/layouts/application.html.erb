@@ -19,23 +19,36 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :tailwind, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :pagy, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    
   </head>
 
-  <body>
+  <body class="min-h-screen bg-base-100 flex flex-col">
 
-    <h1><%= yield :title %></h1>
-
-    <%# CRUD 訊息  %>
-    <% flash.each do |type, msg| %>
-      <div class="flash flash-<%= type %>">
-        <%= msg %>
+    <!--導覽列-->
+    <header class="navbar bg-neutral text-neutral-content">
+      <div class="mx-auto w-full max-w-5xl px-4 flex items-center gap-2">
+        <%= link_to t("navigation.tasks_path"), tasks_path, class: "btn btn-ghost text-neutral-content text-lg font-semibold" %>
+        <%= link_to t("navigation.users_path"), "/users", class: "btn btn-ghost text-neutral-content text-lg font-semibold" %>
       </div>
-    <% end %>
-    <br>
-    
-    <%= yield %>
+    </header>
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+      <!-- CRUD 訊息 -->
+      <% flash.each do |type, msg| %>
+        <div class="alert <%= type.to_s == "alert" ? "alert-error" : "alert-success" %> mb-4">
+          <span><%= msg %></span>
+        </div>
+      <% end %>
+
+      <% if content_for?(:title) %>
+        <h1 class="text-3xl font-bold mb-4"><%= yield :title %></h1>
+      <% end %>
+
+      <%= yield %>
+    </main>
   </body>
 </html>
