@@ -8,6 +8,11 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 if Rails.env.development?
+  user = User.find_or_create_by!(email: "test@gmail.com") do |user|
+    user.name = Faker::Name.first_name_men
+    user.password = "123456"
+    user.role = "adminstrator"
+  end
   20.times do |i|
     Task.find_or_create_by!(title: "task#{format('%03d', i+1)}") do |task|
       task.content = Faker::Lorem.paragraph
@@ -15,6 +20,7 @@ if Rails.env.development?
       task.created_at = Faker::Date.between(from: 5.years.ago, to: Time.current)
       task.status = Task.statuses.keys.sample
       task.priority = Task.priorities.keys.sample
+      task.user_id = user.id
     end
   end
 end
