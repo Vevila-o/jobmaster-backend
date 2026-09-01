@@ -9,6 +9,7 @@ class TasksController < ApplicationController
     direction = params[:direction]
     column = params[:column]
     @tasks = @tasks.sorted_by(column: column, direction: direction)
+    @tasks = @tasks.includes(:user)
     @pagy, @tasks = pagy(:offset, @tasks)
   end
 
