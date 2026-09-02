@@ -1,8 +1,22 @@
 class User < ApplicationRecord
   enum :role, { "normal": "normal", "adminstrator": "adminstrator" }
 
-  # 之後會修掉
-  has_secure_password
+  include BCrypt
+  attr_reader :password
+
+  # 密碼雜湊
+  def password=(new_password)
+    @password = new_password
+    return if @password.blank?
+    self.password_digest = Password.create(@password)
+  end
+
+  # 密碼驗證
+  def check_password?(plain_password)
+    Password.new(password_digest) == plain_password
+  end
+
+
 
   has_many :tasks, dependent: :restrict_with_error
 
