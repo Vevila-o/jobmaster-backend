@@ -33,6 +33,8 @@
       <div class="mx-auto w-full max-w-5xl px-4 flex items-center gap-2">
         <%= link_to t("navigation.tasks_path"), tasks_path, class: "btn btn-ghost text-neutral-content text-lg font-semibold" %>
         <%= link_to t("navigation.users_path"), "/users", class: "btn btn-ghost text-neutral-content text-lg font-semibold" %>
+
+        <%= button_to t("navigation.logout"), session_path, method: :delete, class: "btn btn-ghost text-neutral-content text-lg font-semibold ml-auto" %>
       </div>
     </header>
 
