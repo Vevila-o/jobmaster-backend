@@ -2,6 +2,7 @@ class Task < ApplicationRecord
   enum :status, { pending: :pending, in_progress: :in_progress, completed: :completed }, default: :pending
   enum :priority, { high: :high, medium: :medium, low: :low }, default: :low
 
+  belongs_to :user, optional: true
   ALLOWED_COLUMNS = [ "end_time", "created_at", "priority" ]
 
   # sort

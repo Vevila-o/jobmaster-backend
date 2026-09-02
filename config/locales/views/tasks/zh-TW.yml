@@ -2,15 +2,16 @@
   tasks:
     index:
       title: 所有任務
+      nil_assignee: 未指派
     new:
       title: 新增任務
     create:
-      success: 新增任務成功  
+      success: 新增任務成功
     edit:
       title: 編輯任務
     update:
       success: 編輯任務成功
-    destroy: 
+    destroy:
       success: 刪除任務成功
     flash:
       new_fail: 請輸入標題
