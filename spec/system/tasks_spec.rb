@@ -4,7 +4,7 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
-  let(:task) { FactoryBot.create(:task, title: "test1", content: "test", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
+  let(:task) { create(:task, title: "test1", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
 
   context "when new" do
     before do
@@ -69,7 +69,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "sort" do
-    let(:older_task) { FactoryBot.create(:task, title: "test0", content: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
+    let(:older_task) { create(:task, title: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
 
     before do
       task
@@ -116,8 +116,8 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "priority sort" do
-    let(:medium_task)  { FactoryBot.create(:task, title: "test2", created_at: 3.days.ago, end_time: 3.days.from_now, priority: "medium") }
-  let(:high_task) { FactoryBot.create(:task, title: "test3",  created_at: 2.days.ago, end_time: 4.days.from_now, priority: "high") }
+    let(:medium_task)  { create(:task, priority: "medium") }
+    let(:high_task) { create(:task,  priority: "high") }
 
     before do
       task
@@ -184,7 +184,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "search" do
-    let(:test_task) { FactoryBot.create(:task, title: "test_task", content: "test_task", end_time: 1.day.from_now, status: "in_progress") }
+    let(:test_task) { create(:task, title: "test_task", status: "in_progress") }
 
     before do
       task
@@ -193,7 +193,7 @@ RSpec.describe "Task", type: :system do
     end
 
     context "when search title and status" do
-    before do
+      before do
         fill_in Task.human_attribute_name(:title), with: "test_task"
         select I18n.t("activerecord.attributes.task.statuses.in_progress"), from: Task.human_attribute_name(:status)
         click_button I18n.t("action.search")
@@ -205,7 +205,7 @@ RSpec.describe "Task", type: :system do
 
 
     context "when only search title" do
-    before do
+      before do
         fill_in Task.human_attribute_name(:title), with: "test_task"
         click_button I18n.t("action.search")
       end
@@ -215,7 +215,7 @@ RSpec.describe "Task", type: :system do
     end
 
     context "when only search status" do
-    before do
+      before do
         select I18n.t("activerecord.attributes.task.statuses.in_progress"), from: Task.human_attribute_name(:status)
         click_button I18n.t("action.search")
       end
@@ -225,7 +225,7 @@ RSpec.describe "Task", type: :system do
     end
 
     context "when search empty" do
-    before do
+      before do
         fill_in Task.human_attribute_name(:title), with: nil
         select "", from: Task.human_attribute_name(:status)
         click_button I18n.t("action.search")
@@ -243,10 +243,6 @@ RSpec.describe "Task", type: :system do
 
     context "with valid parameters" do
     let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
-
-    before do
-      create(:user)
-    end
 
       it { expect { create_task }.to change(Task, :count).by(1) }
 

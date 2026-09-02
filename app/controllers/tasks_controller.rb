@@ -8,8 +8,7 @@ class TasksController < ApplicationController
     @tasks = @search_form.search
     direction = params[:direction]
     column = params[:column]
-    @tasks = @tasks.sorted_by(column: column, direction: direction)
-    @tasks = @tasks.includes(:user)
+    @tasks = @tasks.includes(:user).sorted_by(column: column, direction: direction)
     @pagy, @tasks = pagy(:offset, @tasks)
   end
 
@@ -23,8 +22,8 @@ class TasksController < ApplicationController
   # 新增
   def create
     @task = Task.new(task_params)
-    # # 過渡用 先都寫入第一位使用者當fk
-    # @task.user = current_user.task.build
+    # 過渡用 先都寫入第一位使用者當fk
+    # @task = current_user.tasks.build(task_params)
     if @task.save
       redirect_to tasks_path, notice: t(".success")
     else
