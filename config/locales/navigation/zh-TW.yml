@@ -4,5 +4,8 @@
     tasks_path: 所有任務
     users_path: 所有使用者
     new_user_path: 新增使用者
+    new_session_path: 登入
     logout: 登出
+    login: 登入
+
   
