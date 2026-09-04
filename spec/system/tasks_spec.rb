@@ -4,7 +4,7 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
-  let(:task) { create(:task, title: "test1", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
+  let(:task) { create(:task, user: user, title: "test1", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
 
   before { sign_in_as(user) }
@@ -72,7 +72,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "sort" do
-    let(:older_task) { create(:task, title: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
+    let(:older_task) { create(:task, user: user, title: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
 
     before do
       task
@@ -119,8 +119,8 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "priority sort" do
-    let(:medium_task)  { create(:task, priority: "medium") }
-    let(:high_task) { create(:task,  priority: "high") }
+    let(:medium_task)  { create(:task, user: user, priority: "medium") }
+    let(:high_task) { create(:task, user: user, priority: "high") }
 
     before do
       task
@@ -156,7 +156,7 @@ RSpec.describe "Task", type: :system do
     let(:per_page) { Pagy::OPTIONS[:limit] }
 
     before do
-      create_list(:task, total)
+      create_list(:task, total, user: user)
       visit tasks_path
     end
 
@@ -176,7 +176,7 @@ RSpec.describe "Task", type: :system do
       let(:target) { 10 }
 
       before do
-        create_list(:task, target, title: "test_target")
+        create_list(:task, target, user: user, title: "test_target")
         fill_in Task.human_attribute_name(:title), with: "test_target"
         click_button I18n.t("action.search")
         find("nav.pagy a[rel='next']:last-child").click
@@ -187,7 +187,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "search" do
-    let(:test_task) { create(:task, title: "test_task", status: "in_progress") }
+    let(:test_task) { create(:task, user: user, title: "test_task", status: "in_progress") }
 
     before do
       task

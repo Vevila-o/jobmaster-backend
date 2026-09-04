@@ -6,6 +6,9 @@ plugins:
 
 AllCops:
   NewCops: enable
+  
+RSpec/MultipleMemoizedHelpers:
+  Max: 8
 
 # Overwrite or add rules to create your own house style
 #

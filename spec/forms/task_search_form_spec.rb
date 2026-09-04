@@ -3,9 +3,10 @@ require "rails_helper"
 
 RSpec.describe TaskSearchForm do
   describe "#search" do
-    let(:task) { FactoryBot.create(:task, title: "first_task", content: "task", end_time: 2.day.from_now, status: "in_progress") }
-    let(:test_task) { FactoryBot.create(:task, title: "test_task", content: "test_task", end_time: 1.day.from_now, status: "pending") }
-    let(:form) { described_class.new(title: title, status: status) }
+    let(:user) { FactoryBot.create(:user) }
+    let(:task) { FactoryBot.create(:task, user: user, title: "first_task", content: "task", end_time: 2.day.from_now, status: "in_progress") }
+    let(:test_task) { FactoryBot.create(:task, user: user, title: "test_task", content: "test_task", end_time: 1.day.from_now, status: "pending") }
+    let(:form) { described_class.new(user: user, title: title, status: status) }
 
     before do
         task
