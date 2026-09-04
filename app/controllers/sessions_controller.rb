@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_action :authorize, only: [ :new, :create ]
+
   def new
   end
   def create
@@ -7,7 +9,7 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       redirect_to tasks_path, notice: t(".success")
     else
-      flash.now[:alert] = t(".fail")
+      flash[:alert] = t(".fail")
       render :new, status: :unprocessable_content
     end
   end

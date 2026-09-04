@@ -6,7 +6,6 @@
     create:
       success: 登入成功
       fail: 登入失敗，請再重新試一次
-      welcome: "您好，%{name}"
     destroy:
       success: 登出成功
 

@@ -35,7 +35,7 @@
         <%= link_to t("navigation.users_path"), "/users", class: "btn btn-ghost text-neutral-content text-lg font-semibold" %>
 
         <% if current_user%>
-          <span class="ml-auto mr-2"><%= t("sessions.create.welcome", name: current_user.name) %></span>
+          <span class="ml-auto mr-2"><%= t("navigation.auth.welcome", name: current_user.name) %></span>
           <%= button_to t("navigation.logout"), session_path, method: :delete, class: "btn btn-ghost text-neutral-content" %>
         <%else%>
           <%= link_to t("navigation.login"), new_session_path, class: "btn btn-ghost text-neutral-content ml-auto" %>

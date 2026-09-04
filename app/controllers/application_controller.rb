@@ -8,11 +8,15 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pagy::RangeError, with: -> { redirect_to tasks_path(params.permit(:column, :direction, task_search_form: [ :title, :status ])) }
 
-  # before_action :authorize
+  before_action :authorize
   helper_method :current_user
 
   private
   def authorize
+    unless current_user
+      flash[:error] = t("navigation.auth.no_login")
+      redirect_to new_session_path
+    end
   end
 
   def current_user
