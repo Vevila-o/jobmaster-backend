@@ -7,12 +7,11 @@ RSpec.describe "User", type: :system do
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
   let(:other_user) { create(:user) }
 
-  before { sign_in_as(user) }
 
   context "when creating a new user" do
     before do
       user
-      visit users_path
+      visit tasks_path
       visit new_user_path
 
       fill_in User.human_attribute_name(:name), with: "路人1"
@@ -28,6 +27,7 @@ RSpec.describe "User", type: :system do
   context "when editing a user" do
     before do
       user
+      sign_in_as(user)
       visit users_path
       click_link I18n.t("action.edit")
 
@@ -48,6 +48,7 @@ RSpec.describe "User", type: :system do
 
   context "when deleting a user"  do
     before do
+      sign_in_as(user)
       other_user
       visit users_path
       within("tr", text: other_user.email) do
@@ -68,17 +69,15 @@ RSpec.describe "User", type: :system do
   context "with POST /users", type: :request do
     let(:user_params) { { user: { name: "test", email: "test@test.t", password: "test", role: "normal" } } }
 
-    before { sign_in_request_as(user) }
-
     it "increases User" do
       expect {
         post users_path, params: user_params
       }.to change(User, :count).by(1)
     end
 
-    it "redirects to users_path" do
+    it "redirects to tasks_path" do
       post users_path, params: user_params
-      expect(response).to redirect_to(users_path)
+      expect(response).to redirect_to(tasks_path)
     end
   end
 

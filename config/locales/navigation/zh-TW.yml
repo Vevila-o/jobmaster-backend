@@ -9,6 +9,5 @@
     login: 登入
     auth:
       no_login: 請先登入
+      is_login: 您已登入
       welcome: "您好，%{name}"
-
-  
