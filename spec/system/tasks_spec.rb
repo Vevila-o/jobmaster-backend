@@ -4,7 +4,10 @@ require "rails_helper"
 RSpec.describe "Task", type: :system do
   subject { page }
 
-  let(:task) { create(:task, title: "test1", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
+  let(:task) { create(:task, user: user, title: "test1", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
+  let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
+
+  before { sign_in_as(user) }
 
   context "when new" do
     before do
@@ -69,7 +72,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "sort" do
-    let(:older_task) { create(:task, title: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
+    let(:older_task) { create(:task, user: user, title: "test0", created_at: 1.day.ago, end_time: 2.days.from_now, priority: "low") }
 
     before do
       task
@@ -116,8 +119,8 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "priority sort" do
-    let(:medium_task)  { create(:task, priority: "medium") }
-    let(:high_task) { create(:task,  priority: "high") }
+    let(:medium_task)  { create(:task, user: user, priority: "medium") }
+    let(:high_task) { create(:task, user: user, priority: "high") }
 
     before do
       task
@@ -153,7 +156,7 @@ RSpec.describe "Task", type: :system do
     let(:per_page) { Pagy::OPTIONS[:limit] }
 
     before do
-      create_list(:task, total)
+      create_list(:task, total, user: user)
       visit tasks_path
     end
 
@@ -173,7 +176,7 @@ RSpec.describe "Task", type: :system do
       let(:target) { 10 }
 
       before do
-        create_list(:task, target, title: "test_target")
+        create_list(:task, target, user: user, title: "test_target")
         fill_in Task.human_attribute_name(:title), with: "test_target"
         click_button I18n.t("action.search")
         find("nav.pagy a[rel='next']:last-child").click
@@ -184,7 +187,7 @@ RSpec.describe "Task", type: :system do
   end
 
   describe "search" do
-    let(:test_task) { create(:task, title: "test_task", status: "in_progress") }
+    let(:test_task) { create(:task, user: user, title: "test_task", status: "in_progress") }
 
     before do
       task
@@ -241,8 +244,12 @@ RSpec.describe "Task", type: :system do
   context "with POST /tasks", type: :request do
     subject(:create_task) { post tasks_path, params: params }
 
+    before { sign_in_request_as(user) }
+
     context "with valid parameters" do
     let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
+
+    before { sign_in_request_as(user) }
 
       it { expect { create_task }.to change(Task, :count).by(1) }
 
@@ -253,6 +260,8 @@ RSpec.describe "Task", type: :system do
     end
 
     context "when end_time is blank" do
+      before { sign_in_request_as(user) }
+
       let(:params) { { task: { title: "test2", content: "nice" } } }
 
       it "is 422" do
@@ -269,6 +278,8 @@ RSpec.describe "Task", type: :system do
   context "with PATCH /task/:id", type: :request do
     let(:update_params) { { task: { title: "nice try", content: "nice" } } }
 
+    before { sign_in_request_as(user) }
+
     context "when task is updated" do
       before do
         patch task_path(task), params: update_params
@@ -282,6 +293,7 @@ RSpec.describe "Task", type: :system do
   context "with DELETE /tasks/:id", type: :request do
     before do
       task
+      sign_in_request_as(user)
     end
 
     it "delete task from db" do
