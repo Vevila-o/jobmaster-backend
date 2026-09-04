@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   private
   def authorize
     unless current_user
-      flash[:error] = t("navigation.auth.no_login")
+      flash[:alert] = t("navigation.auth.no_login")
       redirect_to new_session_path
     end
   end
