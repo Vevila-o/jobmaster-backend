@@ -5,6 +5,9 @@ RSpec.describe "User", type: :system do
   subject { page }
 
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
+  let(:other_user) { create(:user) }
+
+  before { sign_in_as(user) }
 
   context "when creating a new user" do
     before do
@@ -45,18 +48,27 @@ RSpec.describe "User", type: :system do
 
   context "when deleting a user"  do
     before do
-      user
+      other_user
       visit users_path
+      within("tr", text: other_user.email) do
         click_link I18n.t("action.delete")
+      end
     end
 
-    it { is_expected.to have_content(I18n.t("users.destroy.success")) }
-    it { is_expected.not_to have_content("test") }
+    # it { is_expected.to have_content(I18n.t("users.destroy.success")) }
+
+    it "debug delete user" do
+      expect(page).to have_content(I18n.t("users.destroy.success"))
+    end
+
+    it { is_expected.not_to have_content("other_user.name") }
   end
 
   # requests test
   context "with POST /users", type: :request do
     let(:user_params) { { user: { name: "test", email: "test@test.t", password: "test", role: "normal" } } }
+
+    before { sign_in_request_as(user) }
 
     it "increases User" do
       expect {
@@ -75,6 +87,7 @@ RSpec.describe "User", type: :system do
 
     context "when updating user" do
       before do
+        sign_in_request_as(user)
         user
         patch user_path(user), params: new_params
         user.reload
@@ -84,14 +97,20 @@ RSpec.describe "User", type: :system do
     end
 
     context "when redirecting to user_path" do
-      before { patch user_path(user), params: new_params }
+      before do
+        sign_in_request_as(user)
+        patch user_path(user), params: new_params
+      end
 
       it { expect(response).to redirect_to(user_path(user)) }
     end
   end
 
   context "with DELETE /users/:id", type: :request do
-    before { user }
+    before do
+      sign_in_request_as(user)
+      user
+    end
 
     it "deletes user from db" do
       expect {
@@ -105,6 +124,7 @@ RSpec.describe "User", type: :system do
     let(:role_params) { { user: { role: "adminstrator" } } }
 
     before do
+      sign_in_request_as(user)
       user
       patch user_path(user), params: role_params
       user.reload

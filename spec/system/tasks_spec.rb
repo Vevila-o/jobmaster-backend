@@ -5,6 +5,9 @@ RSpec.describe "Task", type: :system do
   subject { page }
 
   let(:task) { create(:task, title: "test1", created_at: Time.zone.now, end_time: 1.day.from_now, status: "pending", priority: "low") }
+  let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
+
+  before { sign_in_as(user) }
 
   context "when new" do
     before do
@@ -241,8 +244,12 @@ RSpec.describe "Task", type: :system do
   context "with POST /tasks", type: :request do
     subject(:create_task) { post tasks_path, params: params }
 
+    before { sign_in_request_as(user) }
+
     context "with valid parameters" do
     let(:params) { { task: { title: "test1", content: "test", end_time: 1.day.from_now } } }
+
+    before { sign_in_request_as(user) }
 
       it { expect { create_task }.to change(Task, :count).by(1) }
 
@@ -253,6 +260,8 @@ RSpec.describe "Task", type: :system do
     end
 
     context "when end_time is blank" do
+      before { sign_in_request_as(user) }
+
       let(:params) { { task: { title: "test2", content: "nice" } } }
 
       it "is 422" do
@@ -269,6 +278,8 @@ RSpec.describe "Task", type: :system do
   context "with PATCH /task/:id", type: :request do
     let(:update_params) { { task: { title: "nice try", content: "nice" } } }
 
+    before { sign_in_request_as(user) }
+
     context "when task is updated" do
       before do
         patch task_path(task), params: update_params
@@ -282,6 +293,7 @@ RSpec.describe "Task", type: :system do
   context "with DELETE /tasks/:id", type: :request do
     before do
       task
+      sign_in_request_as(user)
     end
 
     it "delete task from db" do
