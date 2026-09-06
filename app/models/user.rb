@@ -15,6 +15,14 @@ class User < ApplicationRecord
     BCrypt::Password.new(password_digest) == plain_password
   end
 
+  def self.authorize_session(email:, password:)
+    user = find_by(email:)
+    return nil unless user
+    return nil unless user.check_password?(password)
+    user
+  end
+
+
   has_many :tasks, dependent: :restrict_with_error
 
   validates :name, presence: { message: I18n.t("errors.messages.blank") }

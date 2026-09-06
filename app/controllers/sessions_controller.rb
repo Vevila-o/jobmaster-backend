@@ -4,12 +4,12 @@ class SessionsController < ApplicationController
   def new
   end
   def create
-    user = User.find_by(email: params[:email])
-    if user && user.check_password?(params[:password])
+    user = User.authorize_session(email: params[:email], password: params[:password])
+    if user
       session[:user_id] = user.id
       redirect_to tasks_path, notice: t(".success")
     else
-      flash[:alert] = t(".fail")
+      flash.now[:alert] = t(".fail")
       render :new, status: :unprocessable_content
     end
   end
