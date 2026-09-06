@@ -12,14 +12,12 @@ class User < ApplicationRecord
 
   # 密碼驗證
   def check_password?(plain_password)
-    BCrypt::Password.new(password_digest) == plain_password
+    return nil unless BCrypt::Password.new(password_digest) == plain_password
+    self
   end
 
   def self.authorize_session(email:, password:)
-    user = find_by(email:)
-    return nil unless user
-    return nil unless user.check_password?(password)
-    user
+    find_by(email:)&.check_password?(password)
   end
 
 
