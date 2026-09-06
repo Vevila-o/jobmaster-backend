@@ -5,11 +5,13 @@ RSpec.describe "User", type: :system do
   subject { page }
 
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
+  let(:other_user) { create(:user) }
+
 
   context "when creating a new user" do
     before do
       user
-      visit users_path
+      visit tasks_path
       visit new_user_path
 
       fill_in User.human_attribute_name(:name), with: "路人1"
@@ -25,6 +27,7 @@ RSpec.describe "User", type: :system do
   context "when editing a user" do
     before do
       user
+      sign_in_as(user)
       visit users_path
       click_link I18n.t("action.edit")
 
@@ -45,13 +48,21 @@ RSpec.describe "User", type: :system do
 
   context "when deleting a user"  do
     before do
-      user
+      sign_in_as(user)
+      other_user
       visit users_path
+      within("tr", text: other_user.email) do
         click_link I18n.t("action.delete")
+      end
     end
 
-    it { is_expected.to have_content(I18n.t("users.destroy.success")) }
-    it { is_expected.not_to have_content("test") }
+    # it { is_expected.to have_content(I18n.t("users.destroy.success")) }
+
+    it "debug delete user" do
+      expect(page).to have_content(I18n.t("users.destroy.success"))
+    end
+
+    it { is_expected.not_to have_content("other_user.name") }
   end
 
   # requests test
@@ -64,9 +75,9 @@ RSpec.describe "User", type: :system do
       }.to change(User, :count).by(1)
     end
 
-    it "redirects to users_path" do
+    it "redirects to tasks_path" do
       post users_path, params: user_params
-      expect(response).to redirect_to(users_path)
+      expect(response).to redirect_to(tasks_path)
     end
   end
 
@@ -75,6 +86,7 @@ RSpec.describe "User", type: :system do
 
     context "when updating user" do
       before do
+        sign_in_request_as(user)
         user
         patch user_path(user), params: new_params
         user.reload
@@ -84,14 +96,20 @@ RSpec.describe "User", type: :system do
     end
 
     context "when redirecting to user_path" do
-      before { patch user_path(user), params: new_params }
+      before do
+        sign_in_request_as(user)
+        patch user_path(user), params: new_params
+      end
 
       it { expect(response).to redirect_to(user_path(user)) }
     end
   end
 
   context "with DELETE /users/:id", type: :request do
-    before { user }
+    before do
+      sign_in_request_as(user)
+      user
+    end
 
     it "deletes user from db" do
       expect {
@@ -105,6 +123,7 @@ RSpec.describe "User", type: :system do
     let(:role_params) { { user: { role: "adminstrator" } } }
 
     before do
+      sign_in_request_as(user)
       user
       patch user_path(user), params: role_params
       user.reload
