@@ -1,7 +1,7 @@
 
 
   <% content_for(:title) { t(".title") } %>
-      <%= link_to t("navigation.new_user_path"), new_user_path(@user), data: {turbo: false},class: "btn btn-primary" %>
+      <%= link_to t("navigation.new_user_path"), new_admin_user_path, data: {turbo: false},class: "btn btn-primary" %>
       
       <div class="overflow-x-auto mt-4">
         <table class="table table-lg">
