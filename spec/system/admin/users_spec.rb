@@ -1,34 +1,17 @@
-# User e2e Test
+# admin user e2e Test
 
 require "rails_helper"
-RSpec.describe "User", type: :system do
+RSpec.describe "Admin::User", type: :system do
   subject { page }
 
   let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
   let(:other_user) { create(:user) }
 
-
-  context "when creating a new user" do
-    before do
-      user
-      visit tasks_path
-      visit new_user_path
-
-      fill_in User.human_attribute_name(:name), with: "路人1"
-      fill_in User.human_attribute_name(:email), with: "mob@test.com"
-      fill_in User.human_attribute_name(:password), with: "test"
-      click_button I18n.t("helpers.submit.create", model: User.model_name.human)
-    end
-
-    it { is_expected.to have_content(I18n.t("users.create.success")) }
-    it { is_expected.to have_content("路人1") }
-  end
-
   context "when editing a user" do
     before do
       user
       sign_in_as(user)
-      visit users_path
+      visit admin_users_path
       click_link I18n.t("action.edit")
 
       fill_in User.human_attribute_name(:name), with: "路人1"
@@ -38,7 +21,7 @@ RSpec.describe "User", type: :system do
     end
 
     it do
-      expect(page).to have_content(I18n.t("users.update.success"))
+      expect(page).to have_content(I18n.t("admin.users.update.success"))
     end
 
     it do
@@ -50,62 +33,45 @@ RSpec.describe "User", type: :system do
     before do
       sign_in_as(user)
       other_user
-      visit users_path
+      visit admin_users_path
       within("tr", text: other_user.email) do
         click_link I18n.t("action.delete")
       end
     end
 
-    # it { is_expected.to have_content(I18n.t("users.destroy.success")) }
-
-    it "debug delete user" do
-      expect(page).to have_content(I18n.t("users.destroy.success"))
+    it "show success message" do
+      expect(page).to have_content(I18n.t("admin.users.destroy.success"))
     end
 
     it { is_expected.not_to have_content("other_user.name") }
   end
 
   # requests test
-  context "with POST /users", type: :request do
-    let(:user_params) { { user: { name: "test", email: "test@test.t", password: "test", role: "normal" } } }
-
-    it "increases User" do
-      expect {
-        post users_path, params: user_params
-      }.to change(User, :count).by(1)
-    end
-
-    it "redirects to tasks_path" do
-      post users_path, params: user_params
-      expect(response).to redirect_to(tasks_path)
-    end
-  end
-
-  context "with PATCH /users/:id", type: :request do
+  context "with PATCH /admin/users/:id", type: :request do
     let(:new_params) { { user: { name: "勇者一" } } }
 
     context "when updating user" do
       before do
         sign_in_request_as(user)
         user
-        patch user_path(user), params: new_params
+        patch admin_user_path(user), params: new_params
         user.reload
       end
 
       it { expect(user).to have_attributes(name: "勇者一") }
     end
 
-    context "when redirecting to user_path" do
+    context "when redirecting to admin_user_path" do
       before do
         sign_in_request_as(user)
-        patch user_path(user), params: new_params
+        patch admin_user_path(user), params: new_params
       end
 
-      it { expect(response).to redirect_to(user_path(user)) }
+      it { expect(response).to redirect_to(admin_user_path(user)) }
     end
   end
 
-  context "with DELETE /users/:id", type: :request do
+  context "with DELETE /admin/users/:id", type: :request do
     before do
       sign_in_request_as(user)
       user
@@ -113,7 +79,7 @@ RSpec.describe "User", type: :system do
 
     it "deletes user from db" do
       expect {
-        delete user_path(user)
+        delete admin_user_path(user)
       }.to change(User, :count).by(-1)
     end
   end
@@ -125,7 +91,7 @@ RSpec.describe "User", type: :system do
     before do
       sign_in_request_as(user)
       user
-      patch user_path(user), params: role_params
+      patch admin_user_path(user), params: role_params
       user.reload
     end
 
