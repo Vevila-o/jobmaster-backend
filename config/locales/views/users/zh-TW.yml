@@ -3,8 +3,12 @@
     users:
       index:
         title: 所有使用者
+        tasks_count: 任務數量
       show:
         title: 個人資訊
+        tasks_count: 任務數量
+        tasks_title: 使用者任務
+        no_tasks: 目前沒有任務
       new:
         title: 新增使用者
       create:

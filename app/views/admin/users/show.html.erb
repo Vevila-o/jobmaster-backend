@@ -1,5 +1,29 @@
+<% content_for(:title) { t(".title") } %>
 
-  <% content_for(:title) {t ".title" } %>
-  <%= render 'userlist' %>
-  <br>
-  <%= link_to t("action.edit"), edit_admin_user_path(@user), class: "btn btn-primary" %>
+<%= render "userlist" %>
+
+<%= link_to t("action.edit"), edit_admin_user_path(@user), class: "btn btn-primary" %>
+
+
+<% if @tasks.any? %>
+  <div class="overflow-x-auto">
+    <table class="table table-fixed w-full">
+      <thead>
+        <tr class="bg-base-200 text-base-content">
+          <th class="w-12"><%= Task.human_attribute_name(:id) %></th>
+          <th class="w-32"><%= Task.human_attribute_name(:title) %></th>
+          <th><%= Task.human_attribute_name(:content) %></th>
+          <th class="w-44"><%= Task.human_attribute_name(:end_time) %></th>
+          <th class="w-16"><%= Task.human_attribute_name(:status) %></th>
+          <th class="w-16"><%= Task.human_attribute_name(:priority) %></th>
+          <th class="w-16"><%= Task.human_attribute_name(:user_id) %></th>
+          <th class="w-40"></th>
+        </tr>
+      </thead>
+    </table>
+
+    <%= render partial: "tasks/task", collection: @tasks %>
+  </div>
+<% else %>
+  <p class="text-base-content/60"><%= t(".no_tasks") %></p>
+<% end %>

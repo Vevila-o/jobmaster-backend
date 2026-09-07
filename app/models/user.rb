@@ -3,6 +3,19 @@ class User < ApplicationRecord
 
   attr_reader :password
 
+  has_many :tasks, dependent: :destroy
+
+  validates :name, presence: { message: I18n.t("errors.messages.blank") }
+
+  validates :email, format: { with: /\A[^@]+@[^@]+\z/, allow_blank: true, message: I18n.t("errors.messages.invalid") }, uniqueness: { message: I18n.t("errors.messages.taken"), allow_blank: true }, presence: { message: I18n.t("errors.messages.blank") }
+
+  validates :password, presence: { message: I18n.t("errors.messages.blank") }, on: :create
+
+  attribute :role, :string, default: "normal"
+
+  scope :with_tasks_count, -> { left_joins(:tasks).group(:id).select("users.*, COUNT(tasks.id) AS tasks_count") }
+
+
   # 密碼雜湊
   def password=(new_password)
     @password = new_password
@@ -19,15 +32,4 @@ class User < ApplicationRecord
   def self.authorize_session(email:, password:)
     find_by(email:)&.check_password?(password)
   end
-
-
-  has_many :tasks, dependent: :restrict_with_error
-
-  validates :name, presence: { message: I18n.t("errors.messages.blank") }
-
-  validates :email, format: { with: /\A[^@]+@[^@]+\z/, allow_blank: true, message: I18n.t("errors.messages.invalid") }, uniqueness: { message: I18n.t("errors.messages.taken"), allow_blank: true }, presence: { message: I18n.t("errors.messages.blank") }
-
-  validates :password, presence: { message: I18n.t("errors.messages.blank") }, on: :create
-
-  attribute :role, :string, default: "normal"
 end

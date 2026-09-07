@@ -2,9 +2,11 @@ module Admin
   class UsersController < BaseController
     before_action :set_user, only: [ :show, :edit, :update, :destroy ]
 
+    rescue_from ActiveRecord::RecordNotFound, with: -> { redirect_to admin_users_path, alert: t("errors.messages.invalid") }
+
     # 全部使用者
     def index
-      @users = User.all
+      @users = User.with_tasks_count
     end
 
     # 單一使用者
@@ -38,18 +40,19 @@ module Admin
       end
     end
 
+    def show
+      @tasks = @user.tasks
+    end
+
     # 刪除
     def destroy
-      if @user&.destroy
-        redirect_to admin_users_path, notice: t(".success")
-      else
-        redirect_to admin_users_path, alert: t(".user_blank")
-      end
+      @user&.destroy
+      redirect_to admin_users_path, notice: t(".success")
     end
 
     private
       def set_user
-        @user = User.find_by(id: params[:id])
+        @user = User.with_tasks_count.find(params[:id])
       end
 
       def user_params

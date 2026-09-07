@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :tasks
   namespace :admin do
     resources :users
+    root to: "users#index"
   end
   resource :session, only: [ :new, :create, :destroy ]
   get "signup", to: "registrations#new"
