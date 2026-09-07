@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :tasks, dependent: :destroy
   before_update :check_role_change
   before_destroy do
-    if User.adminstrator.count <= 1 && self.adminstrator?
+    if User.last_admin? && self.adminstrator?
       errors.add(:base, I18n.t("errors.messages.can't_delete"))
       throw :abort
     end
@@ -41,8 +41,12 @@ class User < ApplicationRecord
     find_by(email:)&.check_password?(password)
   end
 
+  def self.last_admin?
+    User.adminstrator.count <= 1
+  end
+
   def check_role_change
-    if role_was == "adminstrator" && role == "normal" && User.adminstrator.count <= 1
+    if role_was == "adminstrator" && role == "normal" && User.last_admin?
       errors.add(:base, I18n.t("errors.messages.can't_change_role"))
       throw :abort
     end
