@@ -1,0 +1,15 @@
+
+  <tr class="hover:bg-base-200/40">
+    <td><%= user.id %></td>
+    <td class="font-medium"><%= link_to user.name, admin_user_path(user), class: "link link-hover link-primary" %></td>
+    <td><%= user.email %></td>
+    <td><%= user.role %></td>
+    <td><%= user.tasks_count %></td>
+
+    <% if local_assigns[:actions] %>
+      <td class="whitespace-nowrap">
+        <%= link_to t("action.edit"), edit_admin_user_path(user), class: "btn btn-ghost btn-sm text-base font-normal" %>
+        <%= link_to t("action.delete"), admin_user_path(user), class: "btn btn-ghost btn-sm text-base font-normal text-error", data: { turbo_method: :delete, turbo_confirm: t("action.delete_confirm") } %>
+      </td>
+    <% end %>
+  </tr>

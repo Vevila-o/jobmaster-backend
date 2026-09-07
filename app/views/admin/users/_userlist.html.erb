@@ -1,9 +1,5 @@
 
-
-  <% content_for(:title) { t(".title") } %>
-      <%= link_to t("navigation.new_user_path"), new_user_path(@user), data: {turbo: false},class: "btn btn-primary" %>
-      
-      <div class="overflow-x-auto mt-4">
+      <div class="overflow-x-auto">
         <table class="table table-lg">
           <thead>
             <tr class="bg-base-200 text-base-content">
@@ -11,13 +7,11 @@
               <th><%= User.human_attribute_name(:name) %></th>
               <th><%= User.human_attribute_name(:email) %></th>
               <th><%= User.human_attribute_name(:role) %></th>
-              <th></th>
+              <th><%=t("admin.users.show.tasks_count") %></th>
             </tr>
           </thead>
-
           <tbody>
-            <%= render partial: "user", collection: @users, locals: { actions: true } %>
+            <%= render partial: "user",locals: { user: @user } %>
           </tbody>
         </table>
       </div>
-
