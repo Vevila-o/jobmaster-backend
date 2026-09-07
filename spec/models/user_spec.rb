@@ -97,4 +97,20 @@ RSpec.describe User do
         it { is_expected.to have_attributes(role: "normal") }
       end
   end
+
+  describe ".destroy" do
+    let(:admin) { create(:user, role: "adminstrator") }
+    let(:normal) { create(:user, role: "normal") }
+
+    before do
+        admin
+        normal
+      end
+
+    context "when db only 1 admin" do
+      before { admin.destroy }
+
+      it { expect(described_class.exists?(admin.id)).to be true }
+    end
+  end
 end
