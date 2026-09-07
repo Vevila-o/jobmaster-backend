@@ -7,4 +7,4 @@
       taken: 已經被使用
       not_include: 不在列表中
       can't_delete: 您是唯一的管理者，無法刪除
-      
+      can't_change_role: 您是唯一的管理者，無法降級

@@ -4,13 +4,14 @@ class User < ApplicationRecord
   attr_reader :password
 
   has_many :tasks, dependent: :destroy
-
+  before_update :check_role_change
   before_destroy do
     if User.adminstrator.count <= 1 && self.adminstrator?
       errors.add(:base, I18n.t("errors.messages.can't_delete"))
       throw :abort
     end
   end
+
 
   validates :name, presence: { message: I18n.t("errors.messages.blank") }
 
@@ -38,5 +39,12 @@ class User < ApplicationRecord
 
   def self.authorize_session(email:, password:)
     find_by(email:)&.check_password?(password)
+  end
+
+  def check_role_change
+    if role_was == "adminstrator" && role == "normal" && User.adminstrator.count <= 1
+      errors.add(:base, I18n.t("errors.messages.can't_change_role"))
+      throw :abort
+    end
   end
 end
