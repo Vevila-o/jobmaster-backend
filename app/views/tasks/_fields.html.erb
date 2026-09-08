@@ -35,6 +35,7 @@
       <%= f.select :priority, Task.priorities.keys.map { |x| [ t(x, scope: %i[activerecord attributes task priorities]), x ] }, {}, { class: "select" } %>
     </div>
   </div>
+  
 
   <%= f.submit class: "btn btn-primary" %>
 </div>

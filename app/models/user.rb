@@ -7,7 +7,7 @@ class User < ApplicationRecord
   before_update :check_role_change
   before_destroy do
     if User.last_admin? && self.adminstrator?
-      errors.add(:base, I18n.t("errors.messages.can't_delete"))
+      errors.add(:base, I18n.t("errors.messages.cannot_delete"))
       throw :abort
     end
   end
@@ -46,8 +46,8 @@ class User < ApplicationRecord
   end
 
   def check_role_change
-    if role_was == "adminstrator" && role == "normal" && User.last_admin?
-      errors.add(:base, I18n.t("errors.messages.can't_change_role"))
+    if role_change == [ "adminstrator", "normal" ] && User.last_admin?
+      errors.add(:base, I18n.t("errors.messages.cannot_change_role"))
       throw :abort
     end
   end
