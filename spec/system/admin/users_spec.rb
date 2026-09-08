@@ -4,8 +4,8 @@ require "rails_helper"
 RSpec.describe "Admin::User", type: :system do
   subject { page }
 
-  let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "normal") }
-  let(:other_user) { create(:user) }
+  let(:user) { User.create(name: "test", email: "t@t.t", password: "test", role: "adminstrator") }
+  let(:other_user) { create(:user, role: "normal") }
 
   context "when editing a user" do
     before do
@@ -46,6 +46,19 @@ RSpec.describe "Admin::User", type: :system do
     it { is_expected.not_to have_content("other_user.name") }
   end
 
+  context "when normal user visits admin_path" do
+    let(:normal) { create(:user, role: "normal") }
+
+    before do
+      sign_in_as(normal)
+      visit admin_users_path
+    end
+
+    it "show no_permission message" do
+      expect(page).to have_content(I18n.t("navigation.auth.no_permission"))
+    end
+  end
+
   # requests test
   context "with PATCH /admin/users/:id", type: :request do
     let(:new_params) { { user: { name: "勇者一" } } }
@@ -74,29 +87,13 @@ RSpec.describe "Admin::User", type: :system do
   context "with DELETE /admin/users/:id", type: :request do
     before do
       sign_in_request_as(user)
-      user
+      other_user
     end
 
     it "deletes user from db" do
       expect {
-        delete admin_user_path(user)
+        delete admin_user_path(other_user)
       }.to change(User, :count).by(-1)
-    end
-  end
-
-  context "when updating role", type: :request do
-    # 目前還沒有登入控制，假定現在都是一般使用者
-    let(:role_params) { { user: { role: "adminstrator" } } }
-
-    before do
-      sign_in_request_as(user)
-      user
-      patch admin_user_path(user), params: role_params
-      user.reload
-    end
-
-    it "can't be updated to adminstrator" do
-      expect(user.role).to eq("normal")
     end
   end
 end

@@ -26,6 +26,11 @@
       <%= f.password_field :password, class: "input w-full" %>
     </div>
 
+    <div>
+      <%= f.label :role, User.human_attribute_name(:role), class: "label" %>
+      <%= f.select :role, User.roles.keys.map { |x| [ t(x, scope: %i[activerecord attributes user roles]), x ] }, {}, class: "select w-full" %>
+    </div>
+
     <%= f.submit class: "btn btn-primary" %>
   </div>
 <% end %>

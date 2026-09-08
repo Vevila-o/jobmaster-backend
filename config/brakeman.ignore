@@ -1,0 +1,28 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "0f109ccd1405d37d98d18736a4e7805a6baf35f9fdf78fb10c97d139490f2968",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/admin/users_controller.rb",
+      "line": 59,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:user).permit(:name, :email, :password, :role)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Admin::UsersController",
+        "method": "user_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Admin::UsersController 所有 action 皆受 Admin::BaseController 的 check_admin (before_action) 保護，僅 adminstrator 角色可存取，一般使用者無法透過此路徑修改 role"
+    }
+  ],
+  "brakeman_version": "8.0.6"
+}
