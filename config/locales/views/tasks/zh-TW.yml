@@ -1,5 +1,7 @@
 "zh-TW":
   tasks:
+    fields:
+      tag_names_placeholder: 請用逗號分隔
     index:
       title: 所有任務
       nil_assignee: 未指派

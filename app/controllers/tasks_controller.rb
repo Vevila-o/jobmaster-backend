@@ -9,7 +9,7 @@ class TasksController < ApplicationController
     @tasks = @search_form.search
     direction = params[:direction]
     column = params[:column]
-    @tasks = @tasks.includes(:user).sorted_by(column: column, direction: direction)
+    @tasks = @tasks.includes(:user, :tags).sorted_by(column: column, direction: direction)
     @pagy, @tasks = pagy(:offset, @tasks)
   end
 
