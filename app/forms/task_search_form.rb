@@ -1,6 +1,6 @@
 class TaskSearchForm
   include ActiveModel::Model
-    attr_accessor :title, :status, :user
+    attr_accessor :title, :status, :user, :tag_names
 
     ALLOWED_STATUS = Task.statuses.keys.freeze
 
@@ -12,6 +12,10 @@ class TaskSearchForm
       scope = user.tasks
       scope = scope.where("title LIKE ?", "%#{title}%") if title.present?
       scope = scope.where(status: status) if status.present?
+      if tag_names.present?
+        tag_list = tag_names.split(",").map(&:strip)
+        scope = scope.joins(:tags).where("tags.name IN (?)", tag_list).distinct
+      end
       scope
     end
 end
