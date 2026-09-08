@@ -4,13 +4,9 @@ class User < ApplicationRecord
   attr_reader :password
 
   has_many :tasks, dependent: :destroy
-  before_update :check_role_change
-  before_destroy do
-    if User.last_admin? && self.adminstrator?
-      errors.add(:base, I18n.t("errors.messages.cannot_delete"))
-      throw :abort
-    end
-  end
+  before_update :check_if_last_admin_on_update, if: :role_changed?
+  before_destroy :check_if_last_admin_before_destroy, if: :last_and_only_admin?
+
 
 
   validates :name, presence: { message: I18n.t("errors.messages.blank") }
@@ -41,14 +37,21 @@ class User < ApplicationRecord
     find_by(email:)&.check_password?(password)
   end
 
-  def self.last_admin?
-    User.adminstrator.count <= 1
+  private
+
+  def last_and_only_admin?
+    adminstrator? && User.adminstrator.count <= 1
   end
 
-  def check_role_change
-    if role_change == [ "adminstrator", "normal" ] && User.last_admin?
+  def check_if_last_admin_on_update
+    if role_change == [ "adminstrator", "normal" ] && last_and_only_admin?
       errors.add(:base, I18n.t("errors.messages.cannot_change_role"))
       throw :abort
     end
+  end
+
+  def check_if_last_admin_before_destroy
+    errors.add(:base, I18n.t("errors.messages.cannot_delete"))
+    throw :abort
   end
 end
