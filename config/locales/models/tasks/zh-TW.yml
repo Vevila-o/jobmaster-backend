@@ -17,6 +17,7 @@
           medium: 中
           low: 低
         user_id: 使用者
+        tag_names: 標籤
   activemodel:
     attributes:
       task_search_form:
