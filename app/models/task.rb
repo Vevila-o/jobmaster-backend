@@ -7,8 +7,6 @@ class Task < ApplicationRecord
   has_many :tags, through: :task_tags
   after_save :split_task_tag, if: :tags_present?
 
-  attr_accessor :tag_names
-
   ALLOWED_COLUMNS = [ "end_time", "created_at", "priority" ]
 
   # sort
@@ -26,12 +24,20 @@ class Task < ApplicationRecord
   validates :title, presence: { message: I18n.t("errors.messages.blank") }
   validates :end_time, presence: { message: I18n.t("errors.messages.blank") }
 
+  def tag_names
+    tags.pluck(:name).join(", ")
+  end
+
+  def tag_names=(names)
+    @tag_names = names
+  end
+
   private
   def tags_present?
-    tag_names.present?
+    @tag_names.present?
   end
 
   def split_task_tag
-    self.tags = tag_names.split(",").map(&:strip).map { |name| Tag.find_or_create_by(name: name) }
+    self.tags = @tag_names.split(",").map(&:strip).map { |name| Tag.find_or_create_by(name: name) }
   end
 end
